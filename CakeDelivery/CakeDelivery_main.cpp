@@ -38,7 +38,6 @@ inline int get_dist(int x1, int y1, int x2, int y2)
 	return (x_diff + y_diff);
 }
 
-
 enum {
 	UP_RIGHT = 0,
 	RIGHT_DOWN,
@@ -46,20 +45,66 @@ enum {
 	LEFT_UP
 };
 
+enum {
+	UP = 0,
+	RIGHT,
+	DOWN,
+	LEFT
+};
+
 int get_direction(int x1, int x2, int y1, int y2)
 {
 	if ((x2 - x1 >= x1) && (y2 - y1 >= y1))
 		return UP_RIGHT;
-	if ((x2 - x1 <= x1) && (y2 - y1 <= y1))
-		return DOWN_LEFT;
 	if ((x2 - x1 >= x1) && (y2 - y1 <= y1))
 		return RIGHT_DOWN;
+	if ((x2 - x1 <= x1) && (y2 - y1 <= y1))
+		return DOWN_LEFT;
 	if ((x2 - x1 <= x1) && (y2 - y1 >= y1))
 		return LEFT_UP;
-
+	
 	assert(true);
 	return -1;
 }
+
+int x1[2] = { 0, };
+int x2[2] = { 0, };
+int y1[2] = { 0, };
+int y2[2] = { 0, };
+
+inline void set_candidates(int rel, int x, int y, int out_x[2], int out_y[2])
+{
+	switch (rel)
+	{
+	case UP_RIGHT:
+		out_x[0] = x + dx[UP];
+		out_x[1] = x + dx[RIGHT];
+		out_y[0] = y + dy[UP];
+		out_y[1] = y + dy[RIGHT];
+	case RIGHT_DOWN:
+		out_x[0] = x + dx[RIGHT];
+		out_x[1] = x + dx[DOWN];
+		out_y[0] = y + dy[RIGHT];
+		out_y[1] = y + dy[DOWN];
+		break;
+	case DOWN_LEFT:
+		out_x[0] = x + dx[DOWN];
+		out_x[1] = x + dx[LEFT];
+		out_y[0] = y + dy[DOWN];
+		out_y[1] = y + dy[LEFT];
+		break;
+	case LEFT_UP:
+		out_x[0] = x + dx[LEFT];
+		out_x[1] = x + dx[UP];
+		out_y[0] = y + dy[LEFT];
+		out_y[1] = y + dy[UP];
+		break;
+	default:
+		assert(true);
+	}
+	return;
+}
+
 int do_something(void)
 {
 	// to choose n ... we could consider both n+1 and n+2.
@@ -68,6 +113,9 @@ int do_something(void)
 		int min_x = 0xFFFFFFFF, min_y = 0xFFFFFFFF;
 		int min_dist = 0x7FFFFFFF;
 		if (cake < cake_num - 1) {
+			int cur_rel = get_direction(x[cake], x[cake + 1], y[cake], y[cake + 1]);
+			int next_rel = get_direction(x[cake + 1], x[cake + 2], y[cake + 1], y[cake + 2]);
+			
 			for (int i = 0; i < 4; i++) {
 				int dist = get_dist(x[cake - 1], y[cake - 1], x[cake] + dx[i], y[cake] + dy[i]);
 				int nested_min_dist = 0x7FFFFFFF;
