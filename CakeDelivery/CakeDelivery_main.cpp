@@ -11,6 +11,7 @@
 using namespace std;
 
 const int MAX_N = 1000000;
+const int CANDIDATES_N = 5;
 
 enum {
 	UP_RIGHT = 0,
@@ -69,8 +70,16 @@ int get_direction(int x1, int x2, int y1, int y2)
 	return -1;
 }
 
-inline void set_candidates(int rel, int x, int y, int out_x[2], int out_y[2])
+inline void set_candidates(int rel, int x, int y, int out_x[CANDIDATES_N], int out_y[CANDIDATES_N])
 {
+	for (int i = 0; i < CANDIDATES_N - 1; i++) {
+		out_x[i] = x + dx[i];
+		out_y[i] = y + dy[i];
+	}
+	out_x[CANDIDATES_N - 1] = x;
+	out_y[CANDIDATES_N - 1] = y;
+	return;
+
 	switch (rel) {
 		case UP_RIGHT:
 			out_y[0] = y + dy[UP];
@@ -99,6 +108,8 @@ inline void set_candidates(int rel, int x, int y, int out_x[2], int out_y[2])
 		default:
 			assert(true);
 	}
+	out_x[2] = x;
+	out_y[2] = y;
 	return;
 }
 
@@ -123,18 +134,18 @@ int do_something(void)
 			rel_n_next = -1;
 		}
 
-		int x1[2] = { 0, }; int x2[2] = { 0, }; int y1[2] = { 0, }; int y2[2] = { 0, };
+		int x1[CANDIDATES_N] = { 0, }; int x2[CANDIDATES_N] = { 0, }; int y1[CANDIDATES_N] = { 0, }; int y2[CANDIDATES_N] = { 0, };
 		set_candidates(rel_n_cur, x[cake], y[cake], x1, y1);
 		set_candidates(rel_n_next, x[cake + 1], y[cake + 1], x2, y2);
 
 		int min_dist_prev_cur_next = BIG_INT;
 		int min_x = BIG_INT;
 		int min_y = BIG_INT;
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < CANDIDATES_N; i++) {
 			int dist_prev_to_cur = get_dist(x[cake - 1], y[cake - 1], x1[i], y1[i]);
 			if (rel_n_next != -1) {
 				int min_dist_cur_to_next = BIG_INT;
-				for (int j = 0; j < 2; j++) {
+				for (int j = 0; j < CANDIDATES_N; j++) {
 					int dist_cur_to_next = get_dist(x1[i], y1[i], x2[j], y2[j]);
 					if (min_dist_cur_to_next > dist_cur_to_next)
 						min_dist_cur_to_next = dist_cur_to_next;
