@@ -5,34 +5,31 @@
 6 7
 7 3
 */
+
 #include <iostream>
 #include <assert.h>
 
 using namespace std;
 
-const int MAX_N = 1000000;
+const int MAX_N = 100000+1; // +1 : Due to start point
 const int CANDIDATES_N = 5;
-
-enum {
-	UP_RIGHT = 0,
-	RIGHT_DOWN,
-	DOWN_LEFT,
-	LEFT_UP
-};
 
 enum {
 	UP = 0,
 	RIGHT,
 	DOWN,
-	LEFT
+	LEFT,
+	SELF,
 };
+
+int min_dist[MAX_N*CANDIDATES_N];
 
 int x[MAX_N] = { 0, };
 int y[MAX_N] = { 0, };
 
 //UP RIGHT DOWN LEFT
-int dx[4] = { 0, 1, 0,-1 };
-int dy[4] = { 1, 0,-1, 0 };
+int dx[CANDIDATES_N] = { 0, 1, 0,-1, 0 };
+int dy[CANDIDATES_N] = { 1, 0,-1, 0, 0 };
 
 int cake_num = 0;
 const int BIG_INT = 0x7FFFFFFF;
@@ -52,123 +49,36 @@ inline int get_dist(int x1, int y1, int x2, int y2)
 		y_diff = abs(y1) + abs(y2);
 	else
 		y_diff = abs(abs(y1) - abs(y2));
+
 	return (x_diff + y_diff);
-}
-
-int get_direction(int x1, int x2, int y1, int y2)
-{
-	if ((x2 - x1 >= x1) && (y2 - y1 >= y1))
-		return UP_RIGHT;
-	if ((x2 - x1 >= x1) && (y2 - y1 <= y1))
-		return RIGHT_DOWN;
-	if ((x2 - x1 <= x1) && (y2 - y1 <= y1))
-		return DOWN_LEFT;
-	if ((x2 - x1 <= x1) && (y2 - y1 >= y1))
-		return LEFT_UP;
-	
-	assert(true);
-	return -1;
-}
-
-inline void set_candidates(int rel, int x, int y, int out_x[CANDIDATES_N], int out_y[CANDIDATES_N])
-{
-	for (int i = 0; i < CANDIDATES_N - 1; i++) {
-		out_x[i] = x + dx[i];
-		out_y[i] = y + dy[i];
-	}
-	out_x[CANDIDATES_N - 1] = x;
-	out_y[CANDIDATES_N - 1] = y;
-	return;
-
-	switch (rel) {
-		case UP_RIGHT:
-			out_y[0] = y + dy[UP];
-			out_x[0] = x + dx[UP];
-			out_x[1] = x + dx[RIGHT];
-			out_y[1] = y + dy[RIGHT];
-			break;
-		case RIGHT_DOWN:
-			out_x[0] = x + dx[RIGHT];
-			out_x[1] = x + dx[DOWN];
-			out_y[0] = y + dy[RIGHT];
-			out_y[1] = y + dy[DOWN];
-			break;
-		case DOWN_LEFT:
-			out_x[0] = x + dx[DOWN];
-			out_x[1] = x + dx[LEFT];
-			out_y[0] = y + dy[DOWN];
-			out_y[1] = y + dy[LEFT];
-			break;
-		case LEFT_UP:
-			out_x[0] = x + dx[LEFT];
-			out_x[1] = x + dx[UP];
-			out_y[0] = y + dy[LEFT];
-			out_y[1] = y + dy[UP];
-			break;
-		default:
-			assert(true);
-	}
-	out_x[2] = x;
-	out_y[2] = y;
-	return;
 }
 
 int do_something(void)
 {
-	// to choose n ... we could consider both n+1 and n+2.
-	int sol = 0;
-	for (int cake = 1; cake <= cake_num; cake++) {
-		int rel_n_cur = -1; 
-		int rel_n_next = -1; // UNINIT 
-
-		if (cake <= cake_num - 2) {
-			rel_n_next = get_direction(x[cake + 1], x[cake + 2], y[cake + 1], y[cake + 2]);
-			rel_n_cur = get_direction(x[cake], x[cake + 1], y[cake], y[cake + 1]);
-		}
-		else if (cake == cake_num - 1) {
-			rel_n_cur = get_direction(x[cake], x[cake + 1], y[cake], y[cake + 1]);
-			rel_n_next = get_direction(x[cake + 1], x[cake], y[cake + 1], y[cake]);
-		}
-		else if (cake == cake_num) { // due to start from 1
-			rel_n_cur = get_direction(x[cake-1], x[cake], y[cake-1], y[cake]);
-			rel_n_next = -1;
-		}
-
-		int x1[CANDIDATES_N] = { 0, }; int x2[CANDIDATES_N] = { 0, }; int y1[CANDIDATES_N] = { 0, }; int y2[CANDIDATES_N] = { 0, };
-		set_candidates(rel_n_cur, x[cake], y[cake], x1, y1);
-		set_candidates(rel_n_next, x[cake + 1], y[cake + 1], x2, y2);
-
-		int min_dist_prev_cur_next = BIG_INT;
-		int min_x = BIG_INT;
-		int min_y = BIG_INT;
-		for (int i = 0; i < CANDIDATES_N; i++) {
-			int dist_prev_to_cur = get_dist(x[cake - 1], y[cake - 1], x1[i], y1[i]);
-			if (rel_n_next != -1) {
-				int min_dist_cur_to_next = BIG_INT;
-				for (int j = 0; j < CANDIDATES_N; j++) {
-					int dist_cur_to_next = get_dist(x1[i], y1[i], x2[j], y2[j]);
-					if (min_dist_cur_to_next > dist_cur_to_next)
-						min_dist_cur_to_next = dist_cur_to_next;
-				}
-
-				if (min_dist_prev_cur_next > dist_prev_to_cur + min_dist_cur_to_next) {
-					min_dist_prev_cur_next = dist_prev_to_cur + min_dist_cur_to_next;
-					min_x = x1[i];
-					min_y = y1[i];
-				}
-			}
-			else { // The last position
-				if (min_dist_prev_cur_next > dist_prev_to_cur) {
-					min_dist_prev_cur_next = dist_prev_to_cur;
-					min_x = x1[i];
-					min_y = y1[i];
-				}
+	// init
+	for (int i = 0; i < CANDIDATES_N; i++) 
+		min_dist[i] = get_dist(x[0], y[0], x[1] + dx[i], y[1] + dy[i]);
+	
+	// min_dist[1] is filled in, already.
+	for (int cake = 2; cake <= cake_num; cake++) {	
+		for (int n = 0; n < CANDIDATES_N; n++) {
+			int x_n = x[cake] + dx[n];
+			int y_n = y[cake] + dy[n];
+			for (int n_prev = 0; n_prev < CANDIDATES_N; n_prev++) {
+				int x_prev = x[cake - 1] + dx[n_prev];
+				int y_prev = y[cake - 1] + dy[n_prev];
+				int dist_prev = min_dist[CANDIDATES_N*(cake - 2) + n_prev];
+				int dist = dist_prev + get_dist(x_prev, y_prev, x_n, y_n);
+				if (min_dist[CANDIDATES_N*(cake - 1) + n] > dist)
+					min_dist[CANDIDATES_N*(cake - 1) + n] = dist; 
 			}
 		}
-		x[cake] = min_x;
-		y[cake] = min_y;
-		sol += get_dist(x[cake - 1], y[cake - 1], x[cake], y[cake]);
 	}
+
+	int sol = BIG_INT;
+	for (int i = 0; i < CANDIDATES_N; i++) 
+		if (sol > min_dist[CANDIDATES_N*(cake_num - 1) + i])
+			sol = min_dist[CANDIDATES_N*(cake_num - 1) + i];
 
 	return sol;
 }
@@ -177,10 +87,11 @@ int main()
 {
 	freopen("input.txt", "r", stdin);
 	int tc_num = 1;
+	for (int i = 0; i < MAX_N*CANDIDATES_N; i++)
+		min_dist[i] = BIG_INT;
+
 	for (int tc = 0; tc < tc_num; tc++) {
 		cin >> cake_num;
-		int start_x = 0;
-		int start_y = 0;
 		cin >> x[0] >> y[0];
 		for (int cake = 1; cake <= cake_num; cake++) {
 			cin >> x[cake] >> y[cake];
