@@ -104,22 +104,24 @@ inline void set_candidates(int rel, int x, int y, int out_x[2], int out_y[2])
 
 int do_something(void)
 {
-	for (int i = 0; i < 4; i++) {
-		int a[2], b[2];
-		set_candidates(i, 2, 2, a, b);
-		printf("2,2(%d) : %d %d \n", i, a[0], b[0]);
-		printf("2,2(%d) : %d %d \n", i, a[1], b[1]);
-	}
 	// to choose n ... we could consider both n+1 and n+2.
 	int sol = 0;
-	for (int cake = 1; cake < cake_num; cake++) {
-		int rel_n_cur = get_direction(x[cake], x[cake + 1], y[cake], y[cake + 1]);
+	for (int cake = 1; cake <= cake_num; cake++) {
+		int rel_n_cur = -1; 
 		int rel_n_next = -1; // UNINIT 
 
-		if (cake <= cake_num - 2)
+		if (cake <= cake_num - 2) {
 			rel_n_next = get_direction(x[cake + 1], x[cake + 2], y[cake + 1], y[cake + 2]);
-		else if ( cake == cake_num - 1)
+			rel_n_cur = get_direction(x[cake], x[cake + 1], y[cake], y[cake + 1]);
+		}
+		else if (cake == cake_num - 1) {
+			rel_n_cur = get_direction(x[cake], x[cake + 1], y[cake], y[cake + 1]);
 			rel_n_next = get_direction(x[cake + 1], x[cake], y[cake + 1], y[cake]);
+		}
+		else if (cake == cake_num) { // due to start from 1
+			rel_n_cur = get_direction(x[cake-1], x[cake], y[cake-1], y[cake]);
+			rel_n_next = -1;
+		}
 
 		int x1[2] = { 0, }; int x2[2] = { 0, }; int y1[2] = { 0, }; int y2[2] = { 0, };
 		set_candidates(rel_n_cur, x[cake], y[cake], x1, y1);
@@ -130,26 +132,33 @@ int do_something(void)
 		int min_y = BIG_INT;
 		for (int i = 0; i < 2; i++) {
 			int dist_prev_to_cur = get_dist(x[cake - 1], y[cake - 1], x1[i], y1[i]);
-			int min_dist_cur_to_next = BIG_INT;
-			for (int j = 0; j < 2; j++) {
-				int dist_cur_to_next = get_dist(x1[i], y1[i], x2[j], y2[j]);
-				if (min_dist_cur_to_next > dist_cur_to_next)
-					min_dist_cur_to_next = dist_cur_to_next;
-			}
+			if (rel_n_next != -1) {
+				int min_dist_cur_to_next = BIG_INT;
+				for (int j = 0; j < 2; j++) {
+					int dist_cur_to_next = get_dist(x1[i], y1[i], x2[j], y2[j]);
+					if (min_dist_cur_to_next > dist_cur_to_next)
+						min_dist_cur_to_next = dist_cur_to_next;
+				}
 
-			if (min_dist_prev_cur_next > dist_prev_to_cur + min_dist_cur_to_next) {
-				min_dist_prev_cur_next = dist_prev_to_cur + min_dist_cur_to_next;
-				min_x = x1[i];
-				min_y = y1[i];
+				if (min_dist_prev_cur_next > dist_prev_to_cur + min_dist_cur_to_next) {
+					min_dist_prev_cur_next = dist_prev_to_cur + min_dist_cur_to_next;
+					min_x = x1[i];
+					min_y = y1[i];
+				}
+			}
+			else { // The last position
+				if (min_dist_prev_cur_next > dist_prev_to_cur) {
+					min_dist_prev_cur_next = dist_prev_to_cur;
+					min_x = x1[i];
+					min_y = y1[i];
+				}
 			}
 		}
-
-		if (cake <= cake_num - 2)
-			sol += get_dist(x[cake - 1], y[cake - 1], min_x, min_y);
-		else if (cake == cake_num - 1)
-			sol += min_dist_prev_cur_next;
-
+		x[cake] = min_x;
+		y[cake] = min_y;
+		sol += get_dist(x[cake - 1], y[cake - 1], x[cake], y[cake]);
 	}
+
 	return sol;
 }
 
