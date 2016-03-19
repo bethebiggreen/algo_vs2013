@@ -3,6 +3,16 @@ https://www.acmicpc.net/problem/1018
 M*N크기의 보드 (가로*세로)
 
 - 0.03 Support variable M*N
+8 16
+BWWBWBWBBWWBWBWB
+BWBWBWBWBWBWBWBW
+WBWBWBWBWBWBWBWB
+BWBWBWBWBWBWBWBW
+WBWBWBWBWBWBWBWB
+BWBWBWBWBWBWBWBW
+WBWBWBWBWBWBWBWB
+BWBWBWBWBWBWBWBW
+
 - 0.02 We re-use previous result and merge to new one line which is just come up.
        For example, 0-7 is confirmed and move it to 1-8. 1-7 is investigated with previous search and only new line 8 is needed.
 	   Let's implement.
@@ -18,7 +28,7 @@ using namespace std;
 const int MAX_N = 51;
 const int TABLE_N = 8;
 #else
-const int MAX_N = 6;
+const int MAX_N = 5;
 const int TABLE_N = 2;
 #endif
 int tbl[MAX_N][MAX_N];
@@ -35,13 +45,12 @@ const int BIG_INT = 0x7FFFFFFF;
 int sol = BIG_INT;
 
 /* 
-   i is treated as row
-   j is treated as column
+   i is treated as row.
+   j is treated as column.
    type lets us know what 0,0 needs. For insatance, type BLACK, it considers 0,0 has to be BLACK. Vice versa, type WHITE 0,0 has to be WHITE.
    type BLACK : BWBW , type WHITE : WBWB
                 WBWB                BWBW
 				BWBW                WBWB
-
 */		
 inline bool is_it_okay(int i, int j, bool type)
 {
@@ -161,15 +170,15 @@ int do_something(int row, int col)
 int main()
 {
 	freopen("input.txt", "r", stdin);
-	int N = 0, M = 0; // N represents COL, M represents ROW, table[M][N] might be correct grammar.
+	int N = 0, M = 0; // N represents ROW, M represents COL, table[N][M] might be correct grammar.
 	cin >> N >> M;
-	for (int i = 0; i < M; i++) {
-		for (int j = 0; j < N; j++) {
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
 			char tmp = 0;
 			cin >> tmp;
 			tbl[i][j] = (tmp == 'B') ? 1 : 0;
 		}
 	}
-	cout << do_something(M,N);
+	cout << do_something(N,M);
 	return 0;
 }
