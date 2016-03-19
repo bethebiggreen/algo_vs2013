@@ -1,7 +1,8 @@
 /*
 https://www.acmicpc.net/problem/1018
+M*N크기의 보드 (가로*세로)
 
-
+- 0.03 Support variable M*N
 - 0.02 We re-use previous result and merge to new one line which is just come up.
        For example, 0-7 is confirmed and move it to 1-8. 1-7 is investigated with previous search and only new line 8 is needed.
 	   Let's implement.
@@ -13,9 +14,13 @@ https://www.acmicpc.net/problem/1018
 #include <iostream>
 
 using namespace std;
+#if 1
 const int MAX_N = 51;
 const int TABLE_N = 8;
-
+#else
+const int MAX_N = 6;
+const int TABLE_N = 2;
+#endif
 int tbl[MAX_N][MAX_N];
 
 int b_bad_num[TABLE_N] = { 0, };
@@ -88,7 +93,7 @@ void fill_bad_num(int offset)
 	
 	for (int i = 0; i < TABLE_N; i++) {
 		for (int j = 0; j < TABLE_N; j++) {
-			if (is_it_okay(i, j, BLACK)) {
+			if (is_it_okay(i+offset, j, BLACK)) {
 				w_bad_num[j]++;
 			}
 			else {
@@ -100,7 +105,7 @@ void fill_bad_num(int offset)
 
 void pop_bad_num(void)
 {
-	for (int i = 1; i < TABLE_N - 1; i++) {
+	for (int i = 1; i < TABLE_N; i++) {
 		w_bad_num[i - 1] = w_bad_num[i];
 		b_bad_num[i - 1] = b_bad_num[i];
 	}
@@ -138,13 +143,13 @@ void update(void)
 		sol = b_sol;
 }
 
-int do_something(int w, int h)
+int do_something(int row, int col)
 {
-	for (int i = 0; i <= h - TABLE_N; i++) {
+	for (int i = 0; i <= row - TABLE_N; i++) {
 		fill_bad_num(i);
 		update();
 
-		for (int j = 1; j <= w - TABLE_N; j++) {
+		for (int j = 1; j <= col - TABLE_N; j++) {
 			pop_bad_num();
 			set_last_diff(i, j);
 			update();
@@ -155,16 +160,16 @@ int do_something(int w, int h)
 
 int main()
 {
-//	freopen("input.txt", "r", stdin);
-	int w = 0, h = 0;
-	cin >> w >> h;
-	for (int i = 0; i < w; i++) {
-		for (int j = 0; j < h; j++) {
+	freopen("input.txt", "r", stdin);
+	int N = 0, M = 0; // N represents COL, M represents ROW, table[M][N] might be correct grammar.
+	cin >> N >> M;
+	for (int i = 0; i < M; i++) {
+		for (int j = 0; j < N; j++) {
 			char tmp = 0;
 			cin >> tmp;
 			tbl[i][j] = (tmp == 'B') ? 1 : 0;
 		}
 	}
-	cout << do_something(w,h);
+	cout << do_something(M,N);
 	return 0;
 }
