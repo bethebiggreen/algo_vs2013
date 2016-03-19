@@ -1,12 +1,19 @@
 /*
 https://www.acmicpc.net/problem/1018
 
-This version failed to check num of needed changes once checking other chess-table.
+
+- 0.02 We re-use previous result and merge to new one line which is just come up.
+       For example, 0-7 is confirmed and move it to 1-8. 1-7 is investigated with previous search and only new line 8 is needed.
+	   Let's implement.
+	   Checking validation of marking annoying me a lot. Let's make inline function.
+
+- 0.01 This version failed to check num of needed changes once checking other chess-table.
 */
+
 #include <iostream>
 
 using namespace std;
-const int MAX_N = 10;
+const int MAX_N = 51;
 const int TABLE_N = 8;
 
 int tbl[MAX_N][MAX_N];
@@ -22,7 +29,55 @@ enum {
 const int BIG_INT = 0x7FFFFFFF;
 int sol = BIG_INT;
 
-int fill_bad_num(int offset)
+/* 
+   i is treated as row
+   j is treated as column
+   type lets us know what 0,0 needs. For insatance, type BLACK, it considers 0,0 has to be BLACK. Vice versa, type WHITE 0,0 has to be WHITE.
+   type BLACK : BWBW , type WHITE : WBWB
+                WBWB                BWBW
+				BWBW                WBWB
+
+*/		
+inline bool is_it_okay(int i, int j, bool type)
+{
+	int supposed = -1;
+	switch (type) {
+	case BLACK:
+		if (i % 2 == 0) { // BWBW
+			if (j % 2 == 0)
+				supposed = BLACK;
+			else
+				supposed = WHITE;
+		}
+		else { // WBWB
+			if (j % 2 == 0)
+				supposed = WHITE;
+			else
+				supposed = BLACK;
+		}
+		break;
+	case WHITE:
+		if (i % 2 == 0) { // WBWB
+			if (j % 2 == 0)
+				supposed = WHITE;
+			else
+				supposed = BLACK;
+		}
+		else { // BWBW
+			if (j % 2 == 0)
+				supposed = BLACK;
+			else
+				supposed = WHITE;
+		}
+		break;
+	default :
+		break;
+	}
+
+	return (tbl[i][j] == (bool)supposed);
+}
+
+void fill_bad_num(int offset)
 {
 	for (int i = 0; i < TABLE_N; i++) {
 		b_bad_num[i] = 0;
@@ -33,47 +88,14 @@ int fill_bad_num(int offset)
 	
 	for (int i = 0; i < TABLE_N; i++) {
 		for (int j = 0; j < TABLE_N; j++) {
-			if (j % 2 == 0) {
-				if ((i % 2 == 0) && tbl[i + offset][j] != BLACK) {
-					b_bad_num[i]++;
-				}
-				else if ((i % 2 == 1) && tbl[i + offset][j] != WHITE) {
-					b_bad_num[i]++;
-				}
-
-				if ((i % 2 == 0) && tbl[i + offset][j] != WHITE) {
-					w_bad_num[i]++;
-				}
-				else if ((i % 2 == 1) && tbl[i + offset][j] != BLACK) {
-					w_bad_num[i]++;
-				}
+			if (is_it_okay(i, j, BLACK)) {
+				w_bad_num[j]++;
 			}
-			else
-			{
-				if ((i % 2==0 && tbl[i + offset][j] != WHITE)) {
-					b_bad_num[i]++;
-				}
-				else if ((i % 2 == 1) && tbl[i + offset][j] != BLACK){
-					b_bad_num[i]++;
-				}
-
-				if ((i % 2 == 0 && tbl[i + offset][j] != BLACK)) {
-					w_bad_num[i]++;
-				}
-				else if ((i % 2 == 1) && tbl[i + offset][j] != WHITE) {
-					w_bad_num[i]++;
-				}
+			else {
+				b_bad_num[j]++;
 			}
 		}
 	}
-
-	int how_many_bad_for_b = 0;
-	int how_many_bad_for_w = 0;
-	for (int i = 0; i < TABLE_N; i++) {
-		how_many_bad_for_b += w_bad_num[i];
-		how_many_bad_for_w += b_bad_num[i];
-	}
-	return (how_many_bad_for_b > how_many_bad_for_w) ? how_many_bad_for_w : how_many_bad_for_b;
 }
 
 void pop_bad_num(void)
@@ -88,36 +110,14 @@ void pop_bad_num(void)
 
 // BW
 // WB
-void set_last_diff(int w, int h)
+void set_last_diff(int i /*row*/, int j /*column*/)
 {
-	for (int i = 0; i < TABLE_N; i++) {
-		if (i % 2 == 0) {/*odd must be B and even must be W*/
-			if ((h + TABLE_N - 1) % 2 == 0) {
-				if (tbl[w + i][h + TABLE_N - 1] != BLACK)
-					b_bad_num[TABLE_N - 1]++;
-				else
-					w_bad_num[TABLE_N - 1]++;
-			}
-			else {
-				if (tbl[w + i][h + TABLE_N - 1] != WHITE)
-					w_bad_num[TABLE_N - 1]++;
-				else
-					b_bad_num[TABLE_N - 1]++;
-			}
+	for (int offset = 0; offset < TABLE_N; offset++) {
+		if (is_it_okay(i + offset, j + TABLE_N - 1, BLACK)) {
+			w_bad_num[TABLE_N-1]++;
 		}
-		else {
-			if ((h + TABLE_N - 1) % 2 == 0) {
-				if (tbl[w + i][h + TABLE_N - 1] != WHITE)
-					b_bad_num[TABLE_N - 1]++;
-				else
-					w_bad_num[TABLE_N - 1]++;
-			}
-			else {
-				if (tbl[w + i][h + TABLE_N - 1] != BLACK)
-					w_bad_num[TABLE_N - 1]++;
-				else
-					b_bad_num[TABLE_N - 1]++;
-			}
+		else { // SHOULD BE WHITE
+			b_bad_num[TABLE_N - 1]++;
 		}
 	}
 }
@@ -155,7 +155,7 @@ int do_something(int w, int h)
 
 int main()
 {
-	freopen("input.txt", "r", stdin);
+//	freopen("input.txt", "r", stdin);
 	int w = 0, h = 0;
 	cin >> w >> h;
 	for (int i = 0; i < w; i++) {
