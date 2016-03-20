@@ -1,4 +1,7 @@
 /*
+
+0.04 Time-out is occured. Complicated algorithm ...
+
 0.03 Simple algorithm is finished. Complicated algorithms(one mafia indicates other citizen(s)) will be implemented.
      Setting one mafia causes more decisions. Like, below, make A mafia, could assume that consider B,C,D as citizens. 
        B -> 
@@ -23,8 +26,8 @@
 
 using namespace std;
 
-const int MAX_N = 500000+1;
-//const int MAX_N = 10;
+//const int MAX_N = 500000+1;
+const int MAX_N = 10;
 int sol = 0;
 int visited[MAX_N] = { false, };
 int suspect[MAX_N] = { false, };
@@ -36,18 +39,22 @@ enum {
 	MAFIA = 1,
 	CITIZEN = 2,
 };
-#if 0
+
+void traverse(int, int);
+int calls_of_spwan = 0;
+int calls_of_traverse = 0;
+
 node_list who_suspects_me[MAX_N];
 
 struct node {
-	int val1;
-	int val2;
+	int val1; // next
+	int val2; // status
 	node* prev;
 	node* next;
 	node(int value1, int value2) : val1(value1), val2(value2), prev(NULL), next(NULL) {}
 };
 
-struct node_list{
+struct node_list {
 	int size;
 	node* head;
 	node* tail;
@@ -60,77 +67,66 @@ struct node_list{
 			head = new_one;
 			tail = new_one;
 		}
-		else if(head == tail) {
+		else if (head == tail) {
 			head->next = new_one;
 			new_one->prev = head;
 			tail = new_one;
 		}
 		else {
-			new_one->prev =	tail->prev;
+			new_one->prev = tail->prev;
 			tail->prev->next = new_one;
 			tail = new_one;
 		}
 
-		return ++size; 
+		return ++size;
 	}
 
 	node get(int idx) {
 		node* iter = head;
 		for (int cnt = 0; iter != NULL && cnt < idx; iter = iter->next, cnt++);
-		return *iter; 
+		return *iter;
 	}
 
 };
 
-
-
-bool set_mafia(int man)
+// if set_mafia returns false, it meant cur position is not able to set mafia in semantic.
+// return false causes unset up to changed history.
+bool set_mafia(node_list& ns, int cur)
 {
-	node_list history;
-	bool need_recover = false;
-	
-	for (node* iter = who_suspects_me[man].head; iter != NULL ; iter = iter->next) {
-			history.add(iter->val1, mafia[iter->val1]);
-			if (mafia[iter->val1] == MAFIA) {
-				need_recover = true;
-				break;
-			}
-			else {
-				mafia[iter->val1] = CITIZEN;
-				visited[iter->val1] = true;
-			}
-	}
+	node_list& history = ns;
 
-	if (need_recover) {
-		for (node* iter = history.head; iter != NULL; iter = iter->next) {
-			visited[iter->val1] = false;
-			mafia[iter->val1] = iter->val2;
+	//No possiblity for a visit is true.
+	for (node* iter = who_suspects_me[cur].head; iter != NULL; iter = iter->next) {
+		if (mafia[iter->val1] == MAFIA) 
+			return false;
+
+		if (!visited[iter->val1]) {
+			history.add(iter->val1, NOIDEA);
 		}
-		return false;
-	}
-	else {
-		mafia[man] = MAFIA;
-		return true;
-	}
 
+		if (mafia[iter->val1] == MAFIA) {
+			break;
+		}
+		else {
+			mafia[iter->val1] = CITIZEN;
+			visited[iter->val1] = true;
+		}
+	}
 }
 
-
-// TO BE CONTINUED
-bool unset_mafia(int man)
+bool unset_mafia(const node_list &ns, int cur)
 {
 	for (int i = 1; i <= N; i++)
-		if (suspect[i] == man)
+		if (suspect[i] == cur)
 			mafia[i] = NOIDEA;
 
-	mafia[man] = NOIDEA;
+	mafia[cur] = NOIDEA;
 }
-#endif
 
-void traverse(int, int);
 // It must be called with not-visited vertex.
 void spawn_traverse(int root)
 {
+	calls_of_spwan++;
 	traverse(0, root);
 }
 
@@ -148,13 +144,17 @@ void update_solution()
 // It has to traverse both cases (chosen or not chosen)
 void traverse(int prev, int cur)
 {
+	calls_of_traverse++;
 	visited[cur] = true;
+	node_list history;
 	int next = suspect[cur];
 	if (!visited[next]) {
 		if (mafia[prev] != MAFIA) {
-			mafia[cur] = MAFIA;
+			// mafia[cur] = MAFIA;
+			set_mafia(history, cur);
 			traverse(cur, next);
-			mafia[cur] = NOIDEA;
+			unset_mafia(history, cur);
+			// mafia[cur] = NOIDEA;
 			traverse(cur, next);
 		}
 		else {
@@ -201,13 +201,14 @@ void input_proc(void)
 
 	for (int i = 1; i <= N; i++) {
 		cin >> suspect[i];
-		//who_suspects_me[i].add(suspect[i], -1);
+		who_suspects_me[i].add(suspect[i], -1);
 	}
 }
 
 void output_proc(void)
 {
 	cout << sol;
+	cout << endl << "calls of traverse " << calls_of_traverse << ", calls of spawn " << calls_of_spwan << endl;
 }
 
 int main(void)
@@ -216,5 +217,4 @@ int main(void)
 	do_something();
 	output_proc();
 	return 0;
-
 }
