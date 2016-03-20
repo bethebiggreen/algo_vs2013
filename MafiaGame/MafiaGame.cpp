@@ -1,4 +1,6 @@
 /*
+0.05 Topological sort is run, in advance. And we will know MAFIAs and citizens, assumely. 
+     Other vertex will be visited in order until all vertices are visited.
 
 0.04 Time-out is occured. Complicated algorithm ...
 
@@ -40,14 +42,11 @@ enum {
 	CITIZEN = 2,
 };
 
-void traverse(int, int);
 int calls_of_spwan = 0;
 int calls_of_traverse = 0;
 
-node_list who_suspects_me[MAX_N];
-
 struct node {
-	int val1; // next
+	int val1; // pointed by 
 	int val2; // status
 	node* prev;
 	node* next;
@@ -89,110 +88,7 @@ struct node_list {
 
 };
 
-// if set_mafia returns false, it meant cur position is not able to set mafia in semantic.
-// return false causes unset up to changed history.
-bool set_mafia(node_list& ns, int cur)
-{
-	node_list& history = ns;
-
-	//No possiblity for a visit is true.
-	for (node* iter = who_suspects_me[cur].head; iter != NULL; iter = iter->next) {
-		if (mafia[iter->val1] == MAFIA) 
-			return false;
-
-		if (!visited[iter->val1]) {
-			history.add(iter->val1, NOIDEA);
-		}
-
-		if (mafia[iter->val1] == MAFIA) {
-			break;
-		}
-		else {
-			mafia[iter->val1] = CITIZEN;
-			visited[iter->val1] = true;
-		}
-	}
-}
-
-bool unset_mafia(const node_list &ns, int cur)
-{
-	for (int i = 1; i <= N; i++)
-		if (suspect[i] == cur)
-			mafia[i] = NOIDEA;
-
-	mafia[cur] = NOIDEA;
-}
-
-// It must be called with not-visited vertex.
-void spawn_traverse(int root)
-{
-	calls_of_spwan++;
-	traverse(0, root);
-}
-
-void update_solution()
-{
-	int num_mafia = 0;
-	for (int i = 1; i <= N; i++)
-		if (mafia[i] == MAFIA)
-			num_mafia++;
-
-	if (sol < num_mafia)
-		sol = num_mafia;
-}
-
-// It has to traverse both cases (chosen or not chosen)
-void traverse(int prev, int cur)
-{
-	calls_of_traverse++;
-	visited[cur] = true;
-	node_list history;
-	int next = suspect[cur];
-	if (!visited[next]) {
-		if (mafia[prev] != MAFIA) {
-			// mafia[cur] = MAFIA;
-			set_mafia(history, cur);
-			traverse(cur, next);
-			unset_mafia(history, cur);
-			// mafia[cur] = NOIDEA;
-			traverse(cur, next);
-		}
-		else {
-			mafia[cur] = NOIDEA;
-			traverse(cur, next);
-		}
-	}
-	else {
-		if (mafia[prev] != MAFIA && mafia[next] != MAFIA)
-			mafia[cur] = MAFIA;
-
-		//prepare spawning
-		int next_root = 0;
-		bool found = false;
-		for (next_root = 1; next_root <= N; next_root++) {
-			if (!visited[next_root]) {
-				found = true;
-				break;
-			}
-		}
-
-		if (found) 
-			spawn_traverse(next_root);
-		else { //finish one itinerary
-			update_solution();
-		}
-	}
-
-	// Recover previous status
-	if (mafia[cur] == MAFIA)
-		mafia[cur] = NOIDEA;
-	visited[cur] = false;
-}
-
-void do_something(void)
-{
-	spawn_traverse(1);
-}
+node_list who_suspects_me[MAX_N];
 
 void input_proc(void)
 {
@@ -200,15 +96,84 @@ void input_proc(void)
 	cin >> N;
 
 	for (int i = 1; i <= N; i++) {
-		cin >> suspect[i];
-		who_suspects_me[i].add(suspect[i], -1);
+		int tmp = 0;
+		cin >> tmp;
+		suspect[i] = tmp;
+		who_suspects_me[tmp].add(i, -1);
 	}
 }
 
 void output_proc(void)
 {
-	cout << sol;
-	cout << endl << "calls of traverse " << calls_of_traverse << ", calls of spawn " << calls_of_spwan << endl;
+	int num_mafia = 0;
+	for (int i = 1; i <= N; i++)
+		if (mafia[i] == MAFIA)
+			num_mafia++;
+
+	cout << num_mafia;
+}
+
+bool can_set_mafia(int cur)
+{
+	if (suspect[cur] == MAFIA)
+		return false;
+
+	for (node* iter = who_suspects_me[cur].head; iter != NULL; iter = iter->next) {
+		if (mafia[iter->val1] == MAFIA)
+			return false;
+	}
+
+	return true;
+}
+
+// It has to traverse both cases (chosen or not chosen)
+void traverse(int cur)
+{
+	calls_of_traverse++;
+	visited[cur] = true;
+	int next = suspect[cur];
+	if (can_set_mafia(cur)) 
+		mafia[cur] = MAFIA;
+	else 
+		mafia[cur] = CITIZEN;
+
+	if (!visited[next])
+		traverse(next);
+
+	return;
+}
+
+void init_mafias_and_citizen(void)
+{
+	for (int i = 1; i <= N; i++) {
+		if (0 == who_suspects_me[i].size) {
+			int man_no = i;
+			mafia[man_no] = MAFIA;
+			visited[man_no] = true;
+			mafia[suspect[man_no]] = CITIZEN;
+			visited[suspect[man_no]] = true;
+		}
+	}
+}
+
+int get_one()
+{
+	for (int i = 1; i <= N; i++)
+		if (!visited[i])
+			return i;
+}
+
+void do_something(void)
+{
+	init_mafias_and_citizen();
+	while (1)
+	{
+		int start = get_one();
+		if (start == N)
+			break;
+
+		traverse(start);
+	}
 }
 
 int main(void)
