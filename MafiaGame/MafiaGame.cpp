@@ -1,4 +1,13 @@
 /*
+
+0.07 O(N+K) can be implemented. 
+
+0.06 int get_one(void) ; // find not visited vertex from 0 to N
+     while(1) { int start = get_one(); }  
+	 while-loop runs until there is no vertex which is not visited yet.
+	 For better performance, we store 0-in-degree on must_mafias array.
+	 And, main while-loop peeks it up.	 
+
 0.05 Topological sort is run, in advance. And we will know MAFIAs and citizens, assumely. 
      Other vertex will be visited in order until all vertices are visited.
 
@@ -28,12 +37,15 @@
 
 using namespace std;
 
-//const int MAX_N = 500000+1;
-const int MAX_N = 10;
+const int MAX_N = 500000+1;
+//const int MAX_N = 10;
 int sol = 0;
 int visited[MAX_N] = { false, };
 int suspect[MAX_N] = { false, };
 int mafia[MAX_N] = { false , }; // maybe.. it's not needed.
+int must_mafias[MAX_N] = { false, };
+int must_mafias_size = 0;
+
 int N = 0;
 
 enum {
@@ -106,21 +118,30 @@ void input_proc(void)
 void output_proc(void)
 {
 	int num_mafia = 0;
-	for (int i = 1; i <= N; i++)
-		if (mafia[i] == MAFIA)
-			num_mafia++;
+
+	if (must_mafias_size) {
+		for (int i = 1; i <= N; i++)
+			if (mafia[i] == MAFIA)
+				num_mafia++;
+	}
+	else
+		num_mafia = N / 2;
 
 	cout << num_mafia;
 }
 
 bool can_set_mafia(int cur)
 {
-	if (suspect[cur] == MAFIA)
+	if (mafia[suspect[cur]] == MAFIA)
 		return false;
 
 	for (node* iter = who_suspects_me[cur].head; iter != NULL; iter = iter->next) {
 		if (mafia[iter->val1] == MAFIA)
 			return false;
+		else {
+			mafia[iter->val1] == MAFIA;
+			visited[iter->val1] = true;
+		}
 	}
 
 	return true;
@@ -156,23 +177,35 @@ void init_mafias_and_citizen(void)
 	}
 }
 
+int init_start_candidates(void)
+{
+	for (int i = 1; i <= N; i++) {
+		if (0 == who_suspects_me[i].size) {
+			must_mafias[++must_mafias_size] = i;
+			mafia[i] = MAFIA;
+			visited[i] = true;
+		}
+	}
+}
+
 int get_one()
 {
 	for (int i = 1; i <= N; i++)
 		if (!visited[i])
 			return i;
+
+	return 0;
 }
 
 void do_something(void)
 {
-	init_mafias_and_citizen();
-	while (1)
-	{
-		int start = get_one();
-		if (start == N)
-			break;
-
-		traverse(start);
+	init_start_candidates();
+	if (must_mafias_size) {
+		for (int i = 1; i <= must_mafias_size; i++)
+			traverse(must_mafias[i]);
+	}
+	else {
+		sol = (N - 1) / 2;
 	}
 }
 
