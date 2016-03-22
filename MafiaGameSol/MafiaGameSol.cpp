@@ -29,6 +29,7 @@ int main() {
 		--accused[i];
 		++times_accused[accused[i]];
 	}
+
 	for (int i = 0; i < n; ++i)
 		if (times_accused[i] == 0)
 			traverse(i, true);

@@ -65,14 +65,12 @@
 
 using namespace std;
 
-//const int MAX_N = 500000+1;
-const int MAX_N = 10;
+const int MAX_N = 500000+1;
+// const int MAX_N = 10;
 int sol = 0;
-int visited[MAX_N] = { false, };
+bool visited[MAX_N] = { false, };
 int suspect[MAX_N] = { false, };
 int mafia[MAX_N] = { false , }; // maybe.. it's not needed.
-int must_mafias[MAX_N] = { false, };
-int must_mafias_size = 0;
 
 int N = 0;
 
@@ -81,9 +79,6 @@ enum {
 	MAFIA = 1,
 	CITIZEN = 2,
 };
-
-int calls_of_spwan = 0;
-int calls_of_traverse = 0;
 
 struct node {
 	int val1; // pointed by 
@@ -147,93 +142,38 @@ void output_proc(void)
 {
 	int num_mafia = 0;
 
-	if (must_mafias_size) {
-		for (int i = 1; i <= N; i++)
-			if (mafia[i] == MAFIA)
-				num_mafia++;
-	}
-	else
-		num_mafia = N / 2;
+	for (int i = 1; i <= N; i++)
+		if (mafia[i] == MAFIA)
+			num_mafia++;
 
 	cout << num_mafia;
 }
 
-bool can_set_mafia(int cur)
+void traverse(int cur,bool set_mafia)
 {
-	if (mafia[suspect[cur]] == MAFIA)
-		return false;
+	if (visited[cur])
+		return;
 
-	for (node* iter = who_suspects_me[cur].head; iter != NULL; iter = iter->next) {
-		if (mafia[iter->val1] == MAFIA)
-			return false;
-		else {
-			mafia[iter->val1] == MAFIA;
-			visited[iter->val1] = true;
-		}
-	}
-
-	return true;
-}
-
-// It has to traverse both cases (chosen or not chosen)
-void traverse(int cur)
-{
-	calls_of_traverse++;
 	visited[cur] = true;
 	int next = suspect[cur];
-	if (can_set_mafia(cur)) 
-		mafia[cur] = MAFIA;
-	else 
-		mafia[cur] = CITIZEN;
-
-	if (!visited[next])
-		traverse(next);
+	mafia[cur] = set_mafia;
+	
+	if (--who_suspects_me[next].size == 0 || set_mafia)
+		traverse(next, !set_mafia);
 
 	return;
 }
 
-void init_mafias_and_citizen(void)
-{
-	for (int i = 1; i <= N; i++) {
-		if (0 == who_suspects_me[i].size) {
-			int man_no = i;
-			mafia[man_no] = MAFIA;
-			visited[man_no] = true;
-			mafia[suspect[man_no]] = CITIZEN;
-			visited[suspect[man_no]] = true;
-		}
-	}
-}
-
-int init_start_candidates(void)
-{
-	for (int i = 1; i <= N; i++) {
-		if (0 == who_suspects_me[i].size) {
-			must_mafias[++must_mafias_size] = i;
-			mafia[i] = MAFIA;
-			visited[i] = true;
-		}
-	}
-}
-
-int get_one()
-{
-	for (int i = 1; i <= N; i++)
-		if (!visited[i])
-			return i;
-
-	return 0;
-}
-
 void do_something(void)
 {
-	init_start_candidates();
-	if (must_mafias_size) {
-		for (int i = 1; i <= must_mafias_size; i++)
-			traverse(must_mafias[i]);
+	for (int i = 1; i <= N; i++) {
+		if (who_suspects_me[i].size == 0)
+			traverse(i, true);
 	}
-	else {
-		sol = (N - 1) / 2;
+
+	for (int i = 1; i <= N; i++) {
+		if (!visited[i]) // check circles
+			traverse(i, false);
 	}
 }
 
