@@ -1,5 +1,33 @@
 /*
 
+0.08 The solution algorithm is understood.
+     Assuming there is a test case, below. A B C D is a cycle, F H do not have in-degree and direct to a cycle. Q R T S is a cycle.
+	              F
+		        E 
+		      A             Q
+	 	  G B   C H       R   S
+ 			  D             T
+     The sequence of visit is that 'F -> E -> (Stopped, A is not visited). G -> B -> D -> C -> A and Stopped. H is visited independant.'
+	 First for loop chases only no-in-degree vertices, and finishing of this loop represent there are only circles left.
+	 It's an easy job to traverse circle only. Please aware of marking start-point as. If you have 5 vertices (which you don't know yet until 
+	 traverse it), it will show you 2 maximum mobsters. 
+
+
+                I 
+               H       
+              G
+             A     
+	     B       C 
+		  
+		  D  E  F
+         J   K    M
+		K         N
+	   L
+
+	     I, G, L, J, N, K
+		 B  C
+
+
 0.07 O(N+K) can be implemented. 
 
 0.06 int get_one(void) ; // find not visited vertex from 0 to N
@@ -37,8 +65,8 @@
 
 using namespace std;
 
-const int MAX_N = 500000+1;
-//const int MAX_N = 10;
+//const int MAX_N = 500000+1;
+const int MAX_N = 10;
 int sol = 0;
 int visited[MAX_N] = { false, };
 int suspect[MAX_N] = { false, };
