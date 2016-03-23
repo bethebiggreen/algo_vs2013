@@ -1,6 +1,19 @@
 /*
 
-    0.02 : Dynamic programming
+0.02 : Dynamic programming
+	    0(1step) 1(2steps)
+	0   10       10
+    1   30       20
+	2   35       25
+	3   55       55
+	4   65       45
+	5   65       75 
+
+	i > 2
+	a[i][0] = scores[i] + a[i-1][1]
+	a[i][1] = scores[i] + MAX(scores[i-2][0], scores[i-2][1])
+
+
 	0.01 : Recursive (timout occured)
 
 */
@@ -11,6 +24,8 @@ int scores[MAX_N] = { 0, };
 int visited[MAX_N] = { 0, };
 int sol = 0;
 int N = 0;
+
+int max_scores[MAX_N][2];
 
 using namespace std;
 
@@ -27,39 +42,21 @@ void output_proc()
 	cout << sol;
 }
 
-inline bool is_it_in_subsequence(int step)
+inline int my_max(int a, int b)
 {
-	if (step < 2)
-		return false;
-
-	return (visited[step - 1] && visited[step - 2]);
-}
-
-void traverse(int step, int saved_score)
-{
-	if (is_it_in_subsequence(step) || step > N)
-		return;
-
-	visited[step] = true;
-	saved_score += scores[step];
-
-	if (step == N) {
-		if (sol < saved_score)
-			sol = saved_score;
-		return;
-	}
-
-	traverse(step + 1, saved_score);
-	visited[step + 1] = false;
-	traverse(step + 2, saved_score);
-	visited[step + 2] = false;
-
-	return;
+	return (a > b ? a : b);
 }
 
 void do_something()
 {
-	traverse(0, 0);
+	max_scores[0][0] = max_scores[0][1] = scores[0];
+	max_scores[1][0] = scores[1] + max_scores[0][1];
+	max_scores[1][1] = scores[1];
+	for (int i = 2; i < N; i++) {
+		max_scores[i][0] = scores[i] + max_scores[i - 1][1];
+		max_scores[i][1] = scores[i] + my_max(max_scores[i - 2][0], max_scores[i - 2][1]);
+	}
+	sol = my_max(max_scores[N - 1][0], max_scores[N - 1][1]);
 }
 
 int main()
