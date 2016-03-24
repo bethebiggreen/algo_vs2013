@@ -24,24 +24,15 @@ void input_proc(void)
 	cin >> a >> b;
 }
 
-void do_something(void)
+int get_heuristic(void)
 {
-	int tmp = 0;
-	if (a > b) {
-		tmp = a;
-		a = b;
-		b = tmp;
-	}
-
-	//float half = (float)b;
-
-	while (b/2 > a)
+	while (b / 2 > a)
 	{
 		if (b % 2)
 			sol += 2;
 		else
 			sol++;
-		b /= 2;		
+		b /= 2;
 	}
 
 	bool is_even = false;
@@ -50,8 +41,18 @@ void do_something(void)
 
 	int case1 = a - (b / 2 + is_even) + is_even + 1;
 	int case2 = b - a;
-	
+
 	sol += (case1 > case2) ? case2 : case1;
+}
+
+void do_something(void)
+{
+	int tmp = 0;
+	if (a > b) {
+		tmp = a;
+		a = b;
+		b = tmp;
+	}
 }
 
 void output_proc(void)
