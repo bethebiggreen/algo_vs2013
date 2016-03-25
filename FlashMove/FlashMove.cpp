@@ -1,5 +1,6 @@
 /*
-
+0.05 Bug fix : Runetime error that is from check visited[x] should be after range check.
+0.04 The queue implementation is suspected. I'm on debugging.
 0.03 DFS seems failed. BFS is implemented.
 0.02 add traversing all cases with hueristic answer. 
 
@@ -73,13 +74,13 @@ void traverse(int x, int depth)
 		return;
 	}
 	
-	if (!visited[x + dx[0]] && x+dx[0] >= 0 && x + dx[0] <= MAX_N)
+	if (x+dx[0] >= 0 && x + dx[0] <= MAX_N && !visited[x + dx[0]])
 		add_queue(x + dx[0], depth + 1);
 	
-	if (!visited[x + dx[1]] && x + dx[1] >= 0 && x + dx[1] <= MAX_N)
+	if ( x + dx[1] >= 0 && x + dx[1] <= MAX_N && !visited[x + dx[1]])
 		add_queue(x + dx[1], depth + 1);
 	
-	if (!visited[(x *2)] && (x * 2) >= 0 && (x*2) <= MAX_N)
+	if ((x * 2) >= 0 && (x*2) <= MAX_N && !visited[(x * 2)])
 		add_queue(x * 2, depth + 1);
 
 	return;
