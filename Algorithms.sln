@@ -21,6 +21,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StepsWithMaxScores", "Steps
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FlashMove", "FlashMove\FlashMove.vcxproj", "{17BF5F68-FE0F-4353-84DE-F3D45F4C88B0}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SafetRegion", "SafetRegion\SafetRegion.vcxproj", "{E7E449CE-FB5D-4699-AC7C-E9BAB167973A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -101,6 +103,14 @@ Global
 		{17BF5F68-FE0F-4353-84DE-F3D45F4C88B0}.Release|x64.Build.0 = Release|x64
 		{17BF5F68-FE0F-4353-84DE-F3D45F4C88B0}.Release|x86.ActiveCfg = Release|Win32
 		{17BF5F68-FE0F-4353-84DE-F3D45F4C88B0}.Release|x86.Build.0 = Release|Win32
+		{E7E449CE-FB5D-4699-AC7C-E9BAB167973A}.Debug|x64.ActiveCfg = Debug|x64
+		{E7E449CE-FB5D-4699-AC7C-E9BAB167973A}.Debug|x64.Build.0 = Debug|x64
+		{E7E449CE-FB5D-4699-AC7C-E9BAB167973A}.Debug|x86.ActiveCfg = Debug|Win32
+		{E7E449CE-FB5D-4699-AC7C-E9BAB167973A}.Debug|x86.Build.0 = Debug|Win32
+		{E7E449CE-FB5D-4699-AC7C-E9BAB167973A}.Release|x64.ActiveCfg = Release|x64
+		{E7E449CE-FB5D-4699-AC7C-E9BAB167973A}.Release|x64.Build.0 = Release|x64
+		{E7E449CE-FB5D-4699-AC7C-E9BAB167973A}.Release|x86.ActiveCfg = Release|Win32
+		{E7E449CE-FB5D-4699-AC7C-E9BAB167973A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
