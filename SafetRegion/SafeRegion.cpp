@@ -1,5 +1,6 @@
 /*
 
+  0.02 : Timeout is occured after implementing of BFS.
   0.01 : https://www.acmicpc.net/problem/2468
          BFS is adjustd to traverse adjacent verticies.
 
@@ -12,7 +13,6 @@ using namespace std;
 
 int N = 0;
 const int MAX_N = 100+2;
-//const int MAX_N = 5 + 2;
 int g_map[MAX_N][MAX_N];
 int sol = 0;
 
@@ -39,17 +39,20 @@ enum DIRECTIONS {
 int dx[4] = { 0,1,0,-1 };
 int dy[4] = { 1,0,-1,0 };
 
-const int MAX_QUEUE_SIZE = MAX_N*MAX_N * 30;
+const int MAX_QUEUE_SIZE = MAX_N*MAX_N*10;
 node queue[MAX_QUEUE_SIZE];
 int queue_begin = 0;
 int queue_end = -1;
 
-void add_queue(int i, int j)
+inline void add_queue(int i, int j)
 {
+#if _DEBUG
+	cout << "i:" << i << ", j:" << j << ", queue_end:" << queue_end << endl;
+#endif
 	queue[++queue_end] = node(i, j);
 }
 
-node pop_queue(void)
+inline node pop_queue(void)
 {
 	if (queue_begin > queue_end)
 		return node(-1, -1);
@@ -92,7 +95,7 @@ int flood(int depth)
 }
 
 
-void mark(int i, int j, int map[MAX_N][MAX_N])
+inline void mark(int i, int j, int map[MAX_N][MAX_N])
 {
 	if (map[i][j] == FLOODED)
 		return;
@@ -105,8 +108,8 @@ void mark(int i, int j, int map[MAX_N][MAX_N])
 
 		if (new_i < 0 || new_j < 0 || new_i >= N || new_j >= N)
 			continue;
-
-		mark(new_i, new_j, map);
+		if(map[new_i][new_j] > 0)
+			add_queue(new_i, new_j);
 	}
 }
 
@@ -119,6 +122,7 @@ void copy_map(int dst_map[MAX_N][MAX_N], const int org_map[MAX_N][MAX_N])
 
 void init_queue(void)
 {
+	cout << __FUNCTION__ << endl;
 	for (int i = 0; i < MAX_QUEUE_SIZE; i++)
 		queue[i].clear();
 
@@ -128,17 +132,32 @@ void init_queue(void)
 
 int num_of_safe_region(int start, const int m[MAX_N][MAX_N])
 {
-	init_queue();
+
 	int safe_region = 0;
 	int local_map[MAX_N][MAX_N];
 	copy_map(local_map, m);
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
-			if (local_map[i][j] > 0) {
-				mark(i, j, local_map);
-				safe_region++;
+	
+	while (1) {
+		init_queue();
+		bool found = false;
+		for (int i = 0; i < N; i++)
+			for (int j = 0; j < N; j++)
+				if (local_map[i][j] > 0) {
+					add_queue(i, j);
+					i = j = N;
+					found = true;
+					safe_region++;
+				}
+		if (found) {
+			while (1) {
+				node n = pop_queue();
+				if (n.i == -1)
+					break;
+				mark(n.i, n.j, local_map);
 			}
 		}
+		else
+			break;
 	}
 
 	return safe_region;
