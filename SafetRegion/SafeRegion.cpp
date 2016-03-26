@@ -1,5 +1,6 @@
 /*
-
+  
+  0.04 : Add fprintf debug module
   0.03 : Confirmed unnecessary recursive-calls are not called. #include <queue> is needed, further investigation.
   0.02 : Timeout is occured after implementing of BFS.
   0.01 : https://www.acmicpc.net/problem/2468
@@ -8,11 +9,22 @@
 */
 
 #include <iostream>
+#define _STL_QUEUE_ENABLE_ 1
+#if _STL_QUEUE_ENABLE_
+#include <queue>
+#endif
+
 #include <cstdio>
+#undef _DEBUG
 #if _DEBUG
 #include <stdio.h>
 #include <cstdlib>
+#define fprintf_a(fd, fmt, ...)  fprintf(fd, fmt, __VA_ARGS__) 
+#else
+#include <stdarg.h>
+#define fprintf_a(...)
 #endif
+
 using namespace std;
 
 int N = 0;
@@ -21,18 +33,12 @@ int g_map[MAX_N][MAX_N];
 int local_map[MAX_N][MAX_N];
 int sol = 0;
 
+FILE* fp = NULL;
+
 enum status {
 	FLOODED = -1,
 	UNINIT = 0
 };
-
-struct node {
-	int i;
-	int j;
-	node(int in_i = -1, int in_j = -1) : i(in_i), j(in_j) {}
-	void clear() { i = -1; j = -1; }
-};
-
 
 enum DIRECTIONS {
 	UP = 0,
@@ -45,11 +51,22 @@ int dx[4] = { 0,1,0,-1 };
 int dy[4] = { 1,0,-1,0 };
 
 const int MAX_QUEUE_SIZE = MAX_N*MAX_N*10;
+struct node {
+	int i;
+	int j;
+	node(int in_i = -1, int in_j = -1) : i(in_i), j(in_j) {}
+	void clear() { i = -1; j = -1; }
+};
+
+#if !_STL_QUEUE_ENABLE_
 node queue[MAX_QUEUE_SIZE];
 int queue_begin = 0;
 int queue_end = -1;
+#else
+queue<node> g_q;
+#endif
 
-FILE* fp = NULL;
+#if !_STL_QUEUE_ENABLE_
 inline void add_queue(int i, int j)
 {
 #if _DEBUG
@@ -70,9 +87,12 @@ inline node pop_queue(void)
 	fprintf(fp, "[%15s] i:%d, j:%d, queue_begin:%d\n", __FUNCTION__, queue[queue_begin].i, queue[queue_begin].j, queue_begin);
 	return queue[queue_begin++];
 }
+#endif
 
 void input_proc() 
 {
+	freopen("input.txt", "r", stdin);
+
 #if _DEBUG
 	freopen("input.txt", "r", stdin);
 #endif
@@ -108,9 +128,13 @@ int flood(int depth)
 
 inline void mark(int i, int j)
 {
+#if _DEBUG
 	fprintf(fp, "[%15s] i:%d, j:%d will add belows.\n", __FUNCTION__,i, j);
+#endif
 	if (local_map[i][j] == FLOODED) {
+#if _DEBUG
 		fprintf(fp, "[%15s] i:%d, j:%d is returned with out adding.\n", __FUNCTION__, i, j);
+#endif
 		return;
 	}
 	else
@@ -122,8 +146,13 @@ inline void mark(int i, int j)
 
 		if (new_i < 0 || new_j < 0 || new_i >= N || new_j >= N)
 			continue;
-		if(local_map[new_i][new_j] > 0)
+		if (local_map[new_i][new_j] > 0) {
+#if !_STL_QUEUE_ENABLE_
 			add_queue(new_i, new_j);
+#else
+			g_q.push(node(new_i, new_j));
+#endif
+		}
 	}
 }
 
@@ -136,47 +165,74 @@ void copy_map(int dst_map[MAX_N][MAX_N], const int org_map[MAX_N][MAX_N])
 
 void init_queue(void)
 {
+#if _DEBUG
 	cout << __FUNCTION__ << endl;
+#endif
+
+#if !_STL_QUEUE_ENABLE_
 	for (int i = 0; i < MAX_QUEUE_SIZE; i++)
 		queue[i].clear();
 
 	queue_begin = 0;
 	queue_end = -1;
+#else 
+	while (!g_q.empty())
+		g_q.pop();
+#endif
 }
-
-
 
 int num_of_safe_region(int start, const int m[MAX_N][MAX_N])
 {
 
 	int safe_region = 0;
-
 	copy_map(local_map, m);
 	
 	while (1) {
 		init_queue();
 		bool found = false;
+#if _DEBUG
 		fprintf(fp, "[%15s] finding start begins\n", __FUNCTION__);
+#endif
 		for (int i = 0; i < N; i++)
 			for (int j = 0; j < N; j++)
 				if (local_map[i][j] > 0) {
+#if _DEBUG
 					fprintf(fp, "[%15s] i:%d j:%d will be added\n", __FUNCTION__, i, j);
+#endif
+
+#if !_STL_QUEUE_ENABLE_
 					add_queue(i, j);
+#else
+					g_q.push(node(i, j));
+#endif
 					i = j = N;
 					found = true;
 					safe_region++;
 				}
+#if _DEBUG
 		fprintf(fp, "[%15s] finding start ends\n", __FUNCTION__);
+#endif
 
 		if (found) {
+#if _DEBUG
 			fprintf(fp, "[%15s] marking begins\n", __FUNCTION__);
+#endif
 			while (1) {
+#if !_STL_QUEUE_ENABLE_
 				node n = pop_queue();
 				if (n.i == -1)
 					break;
+#else
+				if (g_q.empty())
+					break;
+				node n = g_q.front();
+				g_q.pop();
+#endif
 				mark(n.i, n.j);
 			}
+#if _DEBUG
 			fprintf(fp, "[%15s] marking ends\n", __FUNCTION__);
+#endif
 		}
 		else
 			break;
