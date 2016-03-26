@@ -143,7 +143,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="SafeRegion.cpp" />
-    <ClCompile Include="solution.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="input.txt" />

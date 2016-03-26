@@ -26,7 +26,8 @@
 using namespace std;
 
 int N = 0;
-const int MAX_N = 100+2;
+//const int MAX_N = 100+2;
+const int MAX_N = 5 + 2;
 int g_map[MAX_N][MAX_N];
 int local_map[MAX_N][MAX_N];
 int sol = 0;

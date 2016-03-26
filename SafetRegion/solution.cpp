@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <cstdio>
 #define MaxN 500
 #define NSQR 250000
 static int n, m, Map[MaxN + 2][MaxN + 2], h, Max, qx[NSQR + 1], qy[NSQR + 1];
@@ -30,10 +30,12 @@ void BFS(int Limit, int y, int x)
 		Head++;
 		for (i = 1; i <= 4; i++)
 		{
+			// These two lines show pop!
 			y = qy[Head] + dy[i];
 			x = qx[Head] + dx[i];
 			if (!Check[y][x])
 			{
+				// Below lines show push!
 				if (Map[y][x] >= Limit)
 				{
 					qy[++Tail] = y;
@@ -64,10 +66,9 @@ void Process(void)
 
 void Output(void)
 {
-	FILE *Out = fopen("output.txt", "w");
-	fprintf(Out, "%d", Max);
-	fclose(Out);
-}
+	// FILE *Out = fopen("output.txt", "w");
+	printf("%d", Max);
+	}
 
 int main(void)
 {
