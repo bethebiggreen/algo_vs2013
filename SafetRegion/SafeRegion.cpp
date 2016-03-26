@@ -157,10 +157,6 @@ void copy_map(int dst_map[MAX_N][MAX_N], const int org_map[MAX_N][MAX_N])
 
 void init_queue(void)
 {
-#if _DEBUG
-	cout << __FUNCTION__ << endl;
-#endif
-
 #if !_STL_QUEUE_ENABLE_
 	for (int i = 0; i < MAX_QUEUE_SIZE; i++)
 		queue[i].clear();
@@ -175,7 +171,6 @@ void init_queue(void)
 
 int num_of_safe_region(int start, const int m[MAX_N][MAX_N])
 {
-
 	int safe_region = 0;
 	copy_map(local_map, m);
 	
