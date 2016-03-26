@@ -1,6 +1,6 @@
 /*
   
-  0.04 : Add fprintf debug module
+  0.04 : Add fprintf_a debug module
   0.03 : Confirmed unnecessary recursive-calls are not called. #include <queue> is needed, further investigation.
   0.02 : Timeout is occured after implementing of BFS.
   0.01 : https://www.acmicpc.net/problem/2468
@@ -9,20 +9,18 @@
 */
 
 #include <iostream>
-#define _STL_QUEUE_ENABLE_ 1
-#if _STL_QUEUE_ENABLE_
-#include <queue>
-#endif
-
 #include <cstdio>
-#undef _DEBUG
 #if _DEBUG
 #include <stdio.h>
 #include <cstdlib>
 #define fprintf_a(fd, fmt, ...)  fprintf(fd, fmt, __VA_ARGS__) 
 #else
-#include <stdarg.h>
-#define fprintf_a(...)
+#define fprintf_a
+#endif
+
+#define _STL_QUEUE_ENABLE_ 1
+#if _STL_QUEUE_ENABLE_
+#include <queue>
 #endif
 
 using namespace std;
@@ -73,7 +71,7 @@ inline void add_queue(int i, int j)
 	//cout << "i:" << i << ", j:" << j << ", queue_end:" << queue_end << endl;
 	
 	if (fp)
-		fprintf(fp, "[%15s] i:%d, j:%d, queue_end:%d\n", __FUNCTION__, i, j, queue_end);
+		fprintf_a(fp, "[%15s] i:%d, j:%d, queue_end:%d\n", __FUNCTION__, i, j, queue_end);
 	else
 		cout << "fopen is failed" << endl;
 #endif
@@ -84,15 +82,13 @@ inline node pop_queue(void)
 {
 	if (queue_begin > queue_end)
 		return node(-1, -1);
-	fprintf(fp, "[%15s] i:%d, j:%d, queue_begin:%d\n", __FUNCTION__, queue[queue_begin].i, queue[queue_begin].j, queue_begin);
+	fprintf_a(fp, "[%15s] i:%d, j:%d, queue_begin:%d\n", __FUNCTION__, queue[queue_begin].i, queue[queue_begin].j, queue_begin);
 	return queue[queue_begin++];
 }
 #endif
 
 void input_proc() 
 {
-	freopen("input.txt", "r", stdin);
-
 #if _DEBUG
 	freopen("input.txt", "r", stdin);
 #endif
@@ -128,13 +124,9 @@ int flood(int depth)
 
 inline void mark(int i, int j)
 {
-#if _DEBUG
-	fprintf(fp, "[%15s] i:%d, j:%d will add belows.\n", __FUNCTION__,i, j);
-#endif
+	fprintf_a(fp, "[%15s] i:%d, j:%d will add belows.\n", __FUNCTION__,i, j);
 	if (local_map[i][j] == FLOODED) {
-#if _DEBUG
-		fprintf(fp, "[%15s] i:%d, j:%d is returned with out adding.\n", __FUNCTION__, i, j);
-#endif
+		fprintf_a(fp, "[%15s] i:%d, j:%d is returned with out adding.\n", __FUNCTION__, i, j);
 		return;
 	}
 	else
@@ -190,16 +182,11 @@ int num_of_safe_region(int start, const int m[MAX_N][MAX_N])
 	while (1) {
 		init_queue();
 		bool found = false;
-#if _DEBUG
-		fprintf(fp, "[%15s] finding start begins\n", __FUNCTION__);
-#endif
+		fprintf_a(fp, "[%15s] finding start begins\n", __FUNCTION__);
 		for (int i = 0; i < N; i++)
 			for (int j = 0; j < N; j++)
 				if (local_map[i][j] > 0) {
-#if _DEBUG
-					fprintf(fp, "[%15s] i:%d j:%d will be added\n", __FUNCTION__, i, j);
-#endif
-
+					fprintf_a(fp, "[%15s] i:%d j:%d will be added\n", __FUNCTION__, i, j);
 #if !_STL_QUEUE_ENABLE_
 					add_queue(i, j);
 #else
@@ -209,14 +196,10 @@ int num_of_safe_region(int start, const int m[MAX_N][MAX_N])
 					found = true;
 					safe_region++;
 				}
-#if _DEBUG
-		fprintf(fp, "[%15s] finding start ends\n", __FUNCTION__);
-#endif
+		fprintf_a(fp, "[%15s] finding start ends\n", __FUNCTION__);
 
 		if (found) {
-#if _DEBUG
-			fprintf(fp, "[%15s] marking begins\n", __FUNCTION__);
-#endif
+			fprintf_a(fp, "[%15s] marking begins\n", __FUNCTION__);
 			while (1) {
 #if !_STL_QUEUE_ENABLE_
 				node n = pop_queue();
@@ -230,9 +213,7 @@ int num_of_safe_region(int start, const int m[MAX_N][MAX_N])
 #endif
 				mark(n.i, n.j);
 			}
-#if _DEBUG
-			fprintf(fp, "[%15s] marking ends\n", __FUNCTION__);
-#endif
+			fprintf_a(fp, "[%15s] marking ends\n", __FUNCTION__);
 		}
 		else
 			break;
@@ -277,12 +258,16 @@ void output_proc()
 
 int main()
 {
+#if _DEBUG
 	fp = fopen("output.txt", "w");
+#endif
 	input_proc();
 
 	do_something();
 	output_proc();
+#if _DEBUG
 	if (fp)
 		fclose(fp);
+#endif
 	return 0;
 }
