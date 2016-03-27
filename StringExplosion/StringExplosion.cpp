@@ -7,6 +7,7 @@
 		   For example, if str stores 'TEST' then, next[0] = 1;, next[1] = 2, so on.
 		   Here is bomb scenario, TESTC4C4TEST.
 		   TEST[3] stores digit 8 and it helps iterator skips bomb range.
+		   It needs to solve 'C4C4C4', and FRULA case. 
 
 	0.02 : For the performance issue, having chunk is preferred.
 	       a[0] = 0, b[0] = 3; -> The first chunk exists in 0 to 3.
@@ -31,46 +32,62 @@ using namespace std;
 const int MAX_STR_LEN = 1000000;
 const int MAX_EXPLOSION_LEN = 36;
 
-char str[MAX_STR_LEN + 1];
+char str[MAX_STR_LEN + 2];
 char explosion[MAX_EXPLOSION_LEN + 1];
-
-int chunk_begin[MAX_STR_LEN];
-int chunk_end[MAX_STR_LEN];
-int chunk_cnt = 0;
+int next_idx[MAX_STR_LEN + 2];
+int prev_idx[MAX_STR_LEN + 2];
+const char IGNORE = '#';
+int exp_size = 0;
 
 void input_proc(void)
 {
+#if _DEBUG
+	freopen("input.txt", "r", stdin);
+#endif
+
 	cin >> str;
 	cin >> explosion;
+	while (explosion[exp_size++]);
+	exp_size--;
+	for (int i = 0; i < MAX_STR_LEN; i++) {
+		next_idx[i] = i + 1;
+		prev_idx[i] = i - 1;
+	}
+	explosion[exp_size] = -1;
 }
 
 void output_proc(void)
 {
 	int cnt = 0;
-	for (int i = 0; i < chunk_cnt; i++)
-		for (int j = chunk_begin[chunk_cnt]; j < chunk_end[chunk_cnt]; j++)
-			cout << str[j];
+	while (str[cnt]) {
+		cout << str[cnt];
+		cnt = next_idx[cnt];
+	}
 }
 
 void do_something(void)
 {
-	int iter = 0;
-	char cur = 0;
-	int exp_cnt = 0;
-	bool in_checking = false;
-	chunk_begin[chunk_cnt] = iter;
-	// TEST C4C4TEST end[0] = 4 begin[1] = 6, iter = 6 end[1] = 6  
-	// TEST CC44TEST end[0] = 5 
-	// TEST C4CC44TEST
-
-	while (0 != (cur = str[iter])) {		
-		if (cur == explosion[exp_cnt]) {
-			in_checking = true;
-			exp_cnt++;
+	int cur = 0;
+	while (str[cur]) {
+		int exp_cnt = 0;
+		if (str[cur] == explosion[exp_cnt]) {
+			int tmp = next_idx[cur];
+			while (str[tmp] == explosion[++exp_cnt])
+				tmp = next_idx[tmp];
+			if (exp_size == exp_cnt) {
+				next_idx[prev_idx[cur]] = tmp;
+				prev_idx[tmp] = prev_idx[cur];
+			}
+			else {
+				cur = next_idx[cur];
+				exp_cnt = 0;
+				continue;
+			}
+			exp_cnt = 0;
+			cur = prev_idx[cur];
 		}
 		else {
-			in_checking = false;
-			exp_cnt = 0;
+			cur = next_idx[cur];
 		}
 	}
 }
