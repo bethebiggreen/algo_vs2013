@@ -1,100 +1,50 @@
+/*
+
+ 0.02 : SImple but most beautiful algorithm is imeplemented.
+ 0.01 : Due to memory constraints, brute-force is very hard to implemented.
+        However, on the line, there is very simple solution for HANOI specific which I hate.
+
+*/
+
 #include <iostream>
 
 using namespace std;
 
-const int MAX_N = 20;
-bool visited[MAX_N][MAX_N][MAX_N];
-int status[MAX_N][MAX_N][MAX_N];
-int top[3];
-
-const int MAX_Q_SIZE = MAX_N*MAX_N*MAX_N*MAX_N;
-int from[MAX_Q_SIZE];
-int to[MAX_Q_SIZE];
-
-int q_begin = 0;
-int q_end = -1;
-
 int N = 0;
-inline bool is_goal(void)
-{
+int sol = 0;
 
+const int MAX_QUEUE_SIZE = 10000000;
+int src[MAX_QUEUE_SIZE];
+int dst[MAX_QUEUE_SIZE];
+
+inline void output_proc() {
+	cout << sol << endl;
+
+	for (int i = 0; i < sol; i++)
+		cout << src[i] << " " << dst[i] << endl;
+}
+inline void move_internal(int from, int to)
+{
+	src[sol] = from;
+	dst[sol++] = to;
 }
 
-void add_queue(int src, int dst)
+void move(int num, int from, int to, int by)
 {
-	q_end++;
-	from[q_end] = src;
-	to[q_end] = dst;
+	if (1 == num) {
+		move_internal(from, to);
+		return;
+	}
+
+	move(num - 1, from, by, to);
+	move_internal(from, to);
+	move(num - 1, by, to, from);
 }
 
-bool pop_front_queue(int& src, int& dst)
-{
-	if (q_begin > q_end)
-		return false;
-	src = from[q_begin];
-	dst = to[q_begin];
-	q_begin++;
-
-	return true;
-}
-
-bool finished = false;
-
-void traverse(int src, int dst)
-{
-	// 6 candidates are available.
-	// a->b
-	if (top[0] < top[1]) {
-		traverse(0, 1);
-	}
-
-	// a->c
-	if (top[0] < top[2]) {
-		traverse(0, 2);
-	}
-	
-	// b->a
-	if (top[1] < top[0]) {
-		traverse(1, 0);
-	}
-
-	// b->c
-	if (top[1] < top[2]) {
-		traverse(1, 2);
-	}
-
-	// c->a
-	if (top[2] < top[0]) {
-		traverse(2, 0);
-	}
-
-	// c->b
-	if (top[2] < top[1]) {
-		traverse(2, 1);
-	}
-}
-
-// status
-// 20bit 20bit 20bit
-// bool visitied[4][4][4]  
-//  1 
-//  2
-//  3
-//  4
-//  0000
-//  1248
-
-void init()
-{
-	top[0] = 1;
-	top[1] = 0;
-	top[2] = 0;
-	for (int i = 0; i < N; i++);
-		
-}
 int main()
 {
 	cin >> N;
-	init();
+	move(N, 1, 3, 2);
+	output_proc();
 	return 0;
 }
