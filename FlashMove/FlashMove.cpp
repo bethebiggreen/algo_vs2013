@@ -1,6 +1,8 @@
 /*
-
-0.02 add traversing all cases with hueristic answer.
+0.05 Bug fix : Runetime error that is from check visited[x] should be after range check.
+0.04 The queue implementation is suspected. I'm on debugging.
+0.03 DFS seems failed. BFS is implemented.
+0.02 add traversing all cases with hueristic answer. 
 
 0.01 https://www.acmicpc.net/problem/1697
      Initial algorithm describe below.
@@ -18,7 +20,7 @@ using namespace std;
 
 int g_a = 0 ;
 int g_b = 0 ;
-int sol = 0;
+int sol = 0x7FFFFFFF;
 
 void input_proc(void)
 {
@@ -26,69 +28,78 @@ void input_proc(void)
 	cin >> g_a >> g_b;
 }
 
-int calls_of_traverse = 0;
-int dx[2] = { -1,1 };
-void traverse(int x, int times)
-{
-	/*
-	if (times > sol)
-		return;
-		*/
-	calls_of_traverse++;
-	cout << "calls_of_traverse:" << calls_of_traverse << ", x:" << x << endl;
+const int MAX_N = 100000*2;
+int visited[MAX_N+1] = { 0, };
 
-	if (x < 0)
+struct node {
+	int vertex;
+	int depth;
+	node(int in_vertex = 0, int in_depth = 0) : vertex(in_vertex), depth(in_depth) {}
+};
+
+node queue[MAX_N*10] = { 0, };
+int queue_begin = 0;
+int queue_end = -1;
+
+void add_queue(int vertex, int depth) 
+{
+	queue[++queue_end] = node(vertex, depth);
+}
+
+node pop_queue(void)
+{
+	if (queue_end < queue_begin)
+		return node(-2,-2);
+
+	return queue[queue_begin++];
+}
+
+bool finished = false;
+
+int dx[2] = { -1,1 };
+void traverse(int x, int depth)
+{
+	if (finished)
 		return;
+
+	if (visited[x])
+		return;
+
+	visited[x] = true;
 
 	if (x == g_b) {
-		if (sol > times)
-			sol = times;
+		if (sol > depth)
+			sol = depth;
+		finished = true;
 		return;
 	}
+	
+	if (x+dx[0] >= 0 && x + dx[0] <= MAX_N && !visited[x + dx[0]])
+		add_queue(x + dx[0], depth + 1);
+	
+	if ( x + dx[1] >= 0 && x + dx[1] <= MAX_N && !visited[x + dx[1]])
+		add_queue(x + dx[1], depth + 1);
+	
+	if ((x * 2) >= 0 && (x*2) <= MAX_N && !visited[(x * 2)])
+		add_queue(x * 2, depth + 1);
 
-	// -1, 1 and x2
-	for (int i = 0; i < 2; i++) {
-		traverse(x + dx[i], times + 1);
-	}
-	traverse(2 * x, times + 1);
+	return;
 }
+
 void do_something(void)
 {
-	int tmp = 0;
-	if (g_a > g_b) {
-		tmp = g_a;
-		g_a = g_b;
-		g_b = tmp;
-	}
-
-	int a = g_a;
-	int b = g_b;
-	while (b/2 > a)
-	{
-		if (b % 2)
-			sol += 2;
-		else
-			sol++;
-		b /= 2;		
-	}
-
-	bool is_even = false;
-	if (b % 2 == 0)
-		is_even = true;
-
-	int case1 = a - (b / 2 + is_even) + is_even + 1;
-	int case2 = b - a;
-	
-	sol += (case1 > case2) ? case2 : case1;
-
-	traverse(g_a, 0);
+	add_queue(g_a, 0);
+	while (1) {
+		node n = pop_queue();
+		if (n.vertex == -2)
+			break;
+		traverse(n.vertex, n.depth);
+	}	
 }
-
 
 void output_proc(void)
 {
 	cout << sol;
-	cout << endl << calls_of_traverse << endl;
 }
 
 int main(void)
