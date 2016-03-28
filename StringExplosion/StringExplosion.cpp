@@ -1,6 +1,11 @@
 /*
 	https://www.acmicpc.net/problem/9935
     
+	0.06 : Fix BABADD (BAD) case. Still timout is occured. 
+	0.05 : printf is used, instead of cout.
+	0.04 : Array is going to start with -1 for a 'void'.
+	       Traversing is started from str[1], not str[0].
+
 	0.03 : We will implement similar as linked list.
 	       char str[MAX_N] ; // store string
 		   int next[MAX_N] ; // store next index 
@@ -26,13 +31,14 @@
 */
 
 #include <iostream>
+#include <cstdio>
 
 using namespace std;
 
 const int MAX_STR_LEN = 1000000;
 const int MAX_EXPLOSION_LEN = 36;
 
-char str[MAX_STR_LEN + 2];
+char str[MAX_STR_LEN + 3];
 char explosion[MAX_EXPLOSION_LEN + 1];
 int next_idx[MAX_STR_LEN + 2];
 int prev_idx[MAX_STR_LEN + 2];
@@ -45,8 +51,13 @@ void input_proc(void)
 	freopen("input.txt", "r", stdin);
 #endif
 
-	cin >> str;
+#if 0
+	cin >> str+1;
 	cin >> explosion;
+#else
+	scanf("%s", str + 1);
+	scanf("%s", explosion);
+#endif
 	while (explosion[exp_size++]);
 	exp_size--;
 	for (int i = 0; i < MAX_STR_LEN; i++) {
@@ -54,20 +65,35 @@ void input_proc(void)
 		prev_idx[i] = i - 1;
 	}
 	explosion[exp_size] = -1;
+	str[0] = -1;
 }
 
 void output_proc(void)
 {
+#if _DEBUG
+	FILE* fp = fopen("output.txt", "w");
+#endif
 	int cnt = 0;
+	bool has_printed = false;
 	while (str[cnt]) {
-		cout << str[cnt];
+		if (str[cnt] != -1) {
+			// cout << str[cnt];
+			printf("%c", str[cnt]);
+			// fprintf(fp, "%c", str[cnt]);
+			has_printed = true;
+		}
 		cnt = next_idx[cnt];
+	}
+
+	if (!has_printed) {
+		//cout << "FRULA";
+		printf("FRULA");
 	}
 }
 
 void do_something(void)
 {
-	int cur = 0;
+	int cur = 1;
 	while (str[cur]) {
 		int exp_cnt = 0;
 		if (str[cur] == explosion[exp_cnt]) {
@@ -84,7 +110,9 @@ void do_something(void)
 				continue;
 			}
 			exp_cnt = 0;
-			cur = prev_idx[cur];
+			int iter = 0;
+			while(iter++ < exp_size || -1 != prev_idx[cur])
+				cur = prev_idx[cur];
 		}
 		else {
 			cur = next_idx[cur];
