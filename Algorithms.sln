@@ -31,6 +31,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HanoiMoveSequence", "HanoiM
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StringExplosion", "StringExplosion\StringExplosion.vcxproj", "{530FD832-A729-4EB8-AD84-FBF68732D66A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Probability1", "Probability1\Probability1.vcxproj", "{1A47B0BE-3E94-45A5-9195-F1C302CCB391}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -151,6 +153,14 @@ Global
 		{530FD832-A729-4EB8-AD84-FBF68732D66A}.Release|x64.Build.0 = Release|x64
 		{530FD832-A729-4EB8-AD84-FBF68732D66A}.Release|x86.ActiveCfg = Release|Win32
 		{530FD832-A729-4EB8-AD84-FBF68732D66A}.Release|x86.Build.0 = Release|Win32
+		{1A47B0BE-3E94-45A5-9195-F1C302CCB391}.Debug|x64.ActiveCfg = Debug|x64
+		{1A47B0BE-3E94-45A5-9195-F1C302CCB391}.Debug|x64.Build.0 = Debug|x64
+		{1A47B0BE-3E94-45A5-9195-F1C302CCB391}.Debug|x86.ActiveCfg = Debug|Win32
+		{1A47B0BE-3E94-45A5-9195-F1C302CCB391}.Debug|x86.Build.0 = Debug|Win32
+		{1A47B0BE-3E94-45A5-9195-F1C302CCB391}.Release|x64.ActiveCfg = Release|x64
+		{1A47B0BE-3E94-45A5-9195-F1C302CCB391}.Release|x64.Build.0 = Release|x64
+		{1A47B0BE-3E94-45A5-9195-F1C302CCB391}.Release|x86.ActiveCfg = Release|Win32
+		{1A47B0BE-3E94-45A5-9195-F1C302CCB391}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
