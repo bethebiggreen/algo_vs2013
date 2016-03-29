@@ -1,6 +1,7 @@
 /*
 	https://www.acmicpc.net/problem/9935
     
+	0.07 : Calling printf burstly causes timeout. answer string is stored in buffer temporary and printed out once.
 	0.06 : Fix BABADD (BAD) case. Still timout is occured. 
 	0.05 : printf is used, instead of cout.
 	0.04 : Array is going to start with -1 for a 'void'.
@@ -48,7 +49,7 @@ int exp_size = 0;
 void input_proc(void)
 {
 #if _DEBUG
-	freopen("input.txt", "r", stdin);
+	freopen("eksplozija.in.10c", "r", stdin);
 #endif
 
 #if 0
@@ -68,27 +69,36 @@ void input_proc(void)
 	str[0] = -1;
 }
 
+char output[MAX_STR_LEN] = { 0, };
+int output_idx = 0;
+
 void output_proc(void)
 {
-#if _DEBUG
-	FILE* fp = fopen("output.txt", "w");
-#endif
 	int cnt = 0;
+	
 	bool has_printed = false;
 	while (str[cnt]) {
 		if (str[cnt] != -1) {
-			// cout << str[cnt];
-			printf("%c", str[cnt]);
-			// fprintf(fp, "%c", str[cnt]);
-			has_printed = true;
+			output[output_idx++] = str[cnt];
 		}
 		cnt = next_idx[cnt];
 	}
 
-	if (!has_printed) {
-		//cout << "FRULA";
-		printf("FRULA");
-	}
+	char frula[6] = "FRULA";
+	frula[5] = '\0';
+	cnt = 0;
+	if (!output_idx) 
+		while(frula[cnt] != '\0')
+			output[output_idx++] = frula[cnt++];
+
+#if 0
+	printf("%s\n", output);
+#else
+	FILE* fp = fopen("output.txt", "w");
+	fprintf(fp,"%s\n", output);
+	if (fp)
+		fclose(fp);
+#endif
 }
 
 void do_something(void)
