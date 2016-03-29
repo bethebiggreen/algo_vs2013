@@ -1,6 +1,8 @@
 /*
+
 	https://www.acmicpc.net/problem/9935
     
+	0.08 : (in progress) Stack?
 	0.07 : Calling printf burstly causes timeout. answer string is stored in buffer temporary and printed out once.
 	0.06 : Fix BABADD (BAD) case. Still timout is occured. 
 	0.05 : printf is used, instead of cout.
