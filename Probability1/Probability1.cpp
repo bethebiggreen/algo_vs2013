@@ -33,15 +33,19 @@ inline double get_proability(int num, double probability)
 	int occurrence = num;
 
 	// NCnum, 30C2, For example N:30, num:29, 30*29/2*1
-	if (N != num) {
+	if (num == 1) {
+		// Skip		
+	}
+	else if (N == num) {
+		occurrence = 1;
+	}
+	else if (N != num) {
 		for (int i = N; i > (N - num); i--)
 			occurrence *= (N - i);
 		for (int i = N-num+1; i > 1; i--)
 			occurrence /= i;
 	}
-	else
-		occurrence = 1;
-
+		
 	double temp1 = probability;
 	double temp2 = 1.0 - probability;
 	for (int j = 0; j < num; j++)
@@ -55,17 +59,22 @@ inline double get_proability(int num, double probability)
 void input_proc(void)
 {
 #if _DEBUG
-	freopen("input.txt", "r", stdin);
+	freopen("inp.txt", "r", stdin);
 #endif
 	cin >> TC_NUM;
-	for (int i = 0; i < TC_NUM; i++)
+	for (int i = 0; i < TC_NUM; i++) {
 		cin >> prob_a[i] >> prob_b[i];
+		prob_a[i] /= 100;
+		prob_b[i] /= 100;
+	}
 }
 
 void output_proc(void)
 {
 	for (int i = 0; i < TC_NUM; i++)
-		cout << sol[i] << endl;
+		printf("%1.6f\n");
+	//cout << sol[i] << endl;
+
 }
 
 double get_solution(int tc)
@@ -73,9 +82,9 @@ double get_solution(int tc)
 	double prob = 0.0;
 	for (int i = 0; i < 20; i++) 
 		for (int j = 0; j < 20; j++) 
-			prob += get_proability(i,prob_a[tc])*get_proability(j,prob_b[tc]);
+			prob += (get_proability(non_prime_nums[i], prob_a[tc])*get_proability(non_prime_nums[j],prob_b[tc]));
 	
-	return prob;
+	return 1.0 - prob;
 }
 
 void do_something(void)
