@@ -2,7 +2,7 @@
 
 	https://www.acmicpc.net/problem/9935
     
-	0.08 : (in progress) Stack?
+	0.08 : Previous suspector is stored in stack.
 	0.07 : Calling printf burstly causes timeout. answer string is stored in buffer temporary and printed out once.
 	0.06 : Fix BABADD (BAD) case. Still timout is occured. 
 	0.05 : printf is used, instead of cout.
@@ -45,7 +45,6 @@ char str[MAX_STR_LEN + 3];
 char explosion[MAX_EXPLOSION_LEN + 1];
 int next_idx[MAX_STR_LEN + 2];
 int prev_idx[MAX_STR_LEN + 2];
-const char IGNORE = '#';
 int exp_size = 0;
 
 void input_proc(void)
@@ -103,31 +102,74 @@ void output_proc(void)
 #endif
 }
 
+struct suspector {
+	int index;
+	int explosion_cnt;
+};
+
+suspector stack[MAX_STR_LEN + 1] = { 0, };
+int stack_cnt = 0;
+
+bool push(const int index, const int explosion_cnt)
+{
+	if (stack_cnt > MAX_STR_LEN)
+		return false;
+	
+	stack[++stack_cnt] = { index, explosion_cnt };
+	return true;
+}
+
+bool pop(int& index, int& explosion_cnt)
+{
+	if (stack_cnt < 1)
+		return false;
+	
+	index = stack[stack_cnt].index;
+	explosion_cnt = stack[stack_cnt--].explosion_cnt;
+	return true;
+}
+
 void do_something(void)
 {
 	int cur = 1;
-	while (str[cur]) {
-		int exp_cnt = 0;
+	int exp_cnt = 0;
+	int prev_suspector_idx = -1;
+	while (str[cur]) {	
+		if (!exp_cnt)
+			prev_suspector_idx = cur;
+
 		if (str[cur] == explosion[exp_cnt]) {
-			int tmp = next_idx[cur];
-			while (str[tmp] == explosion[++exp_cnt])
-				tmp = next_idx[tmp];
+			exp_cnt++;
+			int next = next_idx[cur];
+			if (exp_cnt < exp_size) {
+				while (str[next] == explosion[exp_cnt]) {
+					exp_cnt++;
+					next = next_idx[next];
+				}
+			}
+
 			if (exp_size == exp_cnt) {
-				next_idx[prev_idx[cur]] = tmp;
-				prev_idx[tmp] = prev_idx[cur];
+				next_idx[prev_idx[prev_suspector_idx]] = next;
+				prev_idx[next] = prev_idx[cur];
+				suspector prev_suspector;
+				if (pop(prev_suspector.index, prev_suspector.explosion_cnt)) {
+					exp_cnt = prev_suspector.explosion_cnt;
+					prev_suspector_idx = prev_suspector.index;
+					cur = next;
+					continue;
+				}
 			}
-			else {
-				cur = next_idx[cur];
-				exp_cnt = 0;
-				continue;
-			}
+			else 
+				push(cur, exp_cnt);
+
 			exp_cnt = 0;
-			int iter = 0;
-			while(iter++ < exp_size || -1 != prev_idx[cur])
-				cur = prev_idx[cur];
+			cur = next;
 		}
 		else {
+			int tmp;
+			while (pop(tmp, tmp));
 			cur = next_idx[cur];
+			exp_cnt = 0;
 		}
 	}
 }
