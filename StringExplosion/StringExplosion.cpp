@@ -2,6 +2,7 @@
 
 	https://www.acmicpc.net/problem/9935
     
+	0.09 : (in progress) Stack
 	0.08 : Previous suspector is stored in stack.
 	0.07 : Calling printf burstly causes timeout. answer string is stored in buffer temporary and printed out once.
 	0.06 : Fix BABADD (BAD) case. Still timout is occured. 
@@ -41,16 +42,15 @@ using namespace std;
 const int MAX_STR_LEN = 1000000;
 const int MAX_EXPLOSION_LEN = 36;
 
+const char IGNORE = '#';
 char str[MAX_STR_LEN + 3];
 char explosion[MAX_EXPLOSION_LEN + 1];
-int next_idx[MAX_STR_LEN + 2];
-int prev_idx[MAX_STR_LEN + 2];
 int exp_size = 0;
 
 void input_proc(void)
 {
 #if _DEBUG
-	freopen("eksplozija.in.10c", "r", stdin);
+	freopen("input", "r", stdin);
 #endif
 
 #if 0
@@ -62,27 +62,20 @@ void input_proc(void)
 #endif
 	while (explosion[exp_size++]);
 	exp_size--;
-	for (int i = 0; i < MAX_STR_LEN; i++) {
-		next_idx[i] = i + 1;
-		prev_idx[i] = i - 1;
-	}
 	explosion[exp_size] = -1;
-	str[0] = -1;
 }
 
-char output[MAX_STR_LEN] = { 0, };
-int output_idx = 0;
 
 void output_proc(void)
 {
 	int cnt = 0;
 	
 	bool has_printed = false;
+	char output[MAX_STR_LEN] = { 0, };
+	int output_idx = 0;
 	while (str[cnt]) {
-		if (str[cnt] != -1) {
+		if (str[cnt] != IGNORE)
 			output[output_idx++] = str[cnt];
-		}
-		cnt = next_idx[cnt];
 	}
 
 	char frula[6] = "FRULA";
@@ -126,50 +119,26 @@ bool pop(int& index, int& explosion_cnt)
 	
 	index = stack[stack_cnt].index;
 	explosion_cnt = stack[stack_cnt--].explosion_cnt;
+	
 	return true;
 }
 
 void do_something(void)
 {
-	int cur = 1;
+	int cur = 0;
 	int exp_cnt = 0;
-	int prev_suspector_idx = -1;
-	while (str[cur]) {	
-		if (!exp_cnt)
-			prev_suspector_idx = cur;
-
+	while (str[cur]) {
 		if (str[cur] == explosion[exp_cnt]) {
-			exp_cnt++;
-			int next = next_idx[cur];
-			if (exp_cnt < exp_size) {
-				while (str[next] == explosion[exp_cnt]) {
-					exp_cnt++;
-					next = next_idx[next];
-				}
-			}
+			while (1) 
+				if(str[cur++] != explosion[exp_cnt++])
+					break;
 
-			if (exp_size == exp_cnt) {
-				next_idx[prev_idx[prev_suspector_idx]] = next;
-				prev_idx[next] = prev_idx[cur];
-				suspector prev_suspector;
-				if (pop(prev_suspector.index, prev_suspector.explosion_cnt)) {
-					exp_cnt = prev_suspector.explosion_cnt;
-					prev_suspector_idx = prev_suspector.index;
-					cur = next;
-					continue;
-				}
+			if (exp_cnt == exp_size) {
+
 			}
-			else 
+			else {
 				push(cur, exp_cnt);
-
-			exp_cnt = 0;
-			cur = next;
-		}
-		else {
-			int tmp;
-			while (pop(tmp, tmp));
-			cur = next_idx[cur];
-			exp_cnt = 0;
+			}
 		}
 	}
 }
