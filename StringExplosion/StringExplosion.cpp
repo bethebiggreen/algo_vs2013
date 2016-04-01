@@ -2,6 +2,9 @@
 
 	https://www.acmicpc.net/problem/9935
     
+	0.10 : 1. push : when it meets starting character of explosion.
+	       2. pop : when it meets bomb. It would be launched continuosly.
+		   3. bomb[n] : store range of bomb. For instance, if bomb[0] stores integer 24, range from 0 to 24 is doomed.
 	0.09 : Stack
 	0.08 : Previous suspector is stored in stack.
 	0.07 : Calling printf burstly causes timeout. answer string is stored in buffer temporary and printed out once.
@@ -151,8 +154,24 @@ bool pop(int& index, int& explosion_cnt)
 // aC4C4a
 // aCC44a
 // aBABADDa
-// aBABADBADD  다음 칸의 것이 새로운 폭발물이 있을때는 무조건 PUSH. AM_I_IN_STACK 함수로 연결성 검사
-// POP은, 완전히 연결성이 없을때 -> 새롭게 시작되는게 첫 글자가 아닐때,
+// aBABADBADBACDB  다음 칸의 것이 새로운 폭발물이 있을때는 무조건 PUSH. 터지는 도중에도 PUSH 가 되어야 함..망할.
+// aBABADBADBACDB
+
+// explosion 아니고, bomb 도 아니고... 뭐야?
+// AM_I_IN_STACK 함수로 연결성 검사
+// POP은, 완전히 연결성이 없을때 -> 새롭게 시작되는게 첫 글자가 아닐때, 또는 NULL terminator 일때.. -1 넣자.
+// POP 이 최초 실행되기전에, 진행되던 것이 폭발인지 아닌지 알아야한다.폭발물일때는, 
+// POP 은 폭발물이고 그 뒤 문자가 새롭게 시작되는 문자가 아닐떄 일어나야 한다.
+// STACK UNWINDING 중 맞지 않는 문자가 하나라도 생기면 다 밀어버림.
+// BADBADBAD? ""
+// aBBABADBADDAD
+// a############BADD
+
+/*
+  
+*/
+
+
 
 
 void do_something(void)
