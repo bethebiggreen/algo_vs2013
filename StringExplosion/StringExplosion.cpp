@@ -2,7 +2,7 @@
 
 	https://www.acmicpc.net/problem/9935
     
-	0.09 : (in progress) Stack
+	0.09 : Stack
 	0.08 : Previous suspector is stored in stack.
 	0.07 : Calling printf burstly causes timeout. answer string is stored in buffer temporary and printed out once.
 	0.06 : Fix BABADD (BAD) case. Still timout is occured. 
@@ -39,7 +39,7 @@
 
 using namespace std;
 
-const int MAX_STR_LEN = 1000000;
+const int MAX_STR_LEN = 20;
 const int MAX_EXPLOSION_LEN = 36;
 
 const char IGNORE = '#';
@@ -47,17 +47,26 @@ char str[MAX_STR_LEN + 3];
 char explosion[MAX_EXPLOSION_LEN + 1];
 int exp_size = 0;
 
+struct bomb {
+	int pos;
+	int len;
+	bomb(int in_pos = -1, int in_len = -1) : pos(in_pos), len(in_len) {}
+};
+
+bomb bombs[MAX_STR_LEN + 2];
+int bomb_cnt = 0;
+
 void input_proc(void)
 {
 #if _DEBUG
-	freopen("input", "r", stdin);
+	freopen("inp1.txt", "r", stdin);
 #endif
 
 #if 0
-	cin >> str+1;
+	cin >> str;
 	cin >> explosion;
 #else
-	scanf("%s", str + 1);
+	scanf("%s", str);
 	scanf("%s", explosion);
 #endif
 	while (explosion[exp_size++]);
@@ -71,11 +80,27 @@ void output_proc(void)
 	int cnt = 0;
 	
 	bool has_printed = false;
-	char output[MAX_STR_LEN] = { 0, };
+	char output[MAX_STR_LEN+2] = { 0, };
 	int output_idx = 0;
-	while (str[cnt]) {
-		if (str[cnt] != IGNORE)
-			output[output_idx++] = str[cnt];
+
+	// b[0] = { 1, 3 }
+	// b[1] = { 5, 7 }
+	// 0-1, 
+	if(bomb_cnt) {
+		int prev_end = 0;
+		for (int i = 0; i < bomb_cnt; i++) {
+			bomb& b = bombs[i];
+			for (int j = prev_end; j < b.pos ;j++)
+				output[output_idx++] = str[j];
+			prev_end = b.pos + b.len + 1;
+		}
+
+		while(str[prev_end])
+			output[output_idx++] = str[prev_end++];
+	}
+	else
+	{
+		printf("%s\n", str);
 	}
 
 	char frula[6] = "FRULA";
@@ -85,7 +110,7 @@ void output_proc(void)
 		while(frula[cnt] != '\0')
 			output[output_idx++] = frula[cnt++];
 
-#if 0
+#if 1
 	printf("%s\n", output);
 #else
 	FILE* fp = fopen("output.txt", "w");
@@ -123,23 +148,82 @@ bool pop(int& index, int& explosion_cnt)
 	return true;
 }
 
+// aC4C4a
+// aCC44a
+// aBABADDa
+// aBABADBADD  다음 칸의 것이 새로운 폭발물이 있을때는 무조건 PUSH. AM_I_IN_STACK 함수로 연결성 검사
+// POP은, 완전히 연결성이 없을때 -> 새롭게 시작되는게 첫 글자가 아닐때,
+
+
 void do_something(void)
 {
 	int cur = 0;
 	int exp_cnt = 0;
+	int bomb_begin = 0;
 	while (str[cur]) {
 		if (str[cur] == explosion[exp_cnt]) {
-			while (1) 
-				if(str[cur++] != explosion[exp_cnt++])
+			if (exp_cnt == 0) // 이전 loop 에서 폭발물에 대한 정보가 없는 경우
+				bomb_begin = cur;
+			cur++, exp_cnt++;
+
+			bool is_bomb = false;
+			while (1) {
+				// 폭발물을 계속 검사함. explosion 의 마지막은 -1 이기에, 조건문이 끝난후
+				// exp_cnt 는 exp_size 이상일 경우는 없음.
+				if (exp_cnt == exp_size) {
+					is_bomb = true;
 					break;
+				}
 
-			if (exp_cnt == exp_size) {
-
+				if (str[cur] != explosion[exp_cnt])
+					break;
+				else
+					cur++, exp_cnt++;
 			}
-			else {
-				push(cur, exp_cnt);
+
+			// 폭발물은 아니지만, 폭발물일 가능성이 있는 경우
+			if (!is_bomb && str[cur] && explosion[0]) {
+				push(bomb_begin, exp_cnt);
+				exp_cnt = 0;
+				continue;
+			}
+			else if (is_bomb) {
+				bomb& b = bombs[bomb_cnt];
+				b.pos = bomb_begin;
+				b.len += exp_cnt; // Aware of num of exp_cnt
+				if (str[cur] == explosion[0]) { // 연속 폭발 대비 BA BAD BAD D 에서 마지막 D 를 처리해주려면.. 
+					exp_cnt = 0;
+					continue;
+				}
+				int trash = -1;
+				int popped_bomb_pos, popped_bomb_cnt;
+				// pop 에서 이전 폭발물 후보가 있으면, 같이 검사해야. 이전 정보를 pop 해서 세팅하고,
+				// 이 정보가 맞다면, 진행함.
+				if (pop(popped_bomb_pos, popped_bomb_cnt)) {
+					bomb_begin = popped_bomb_pos;
+					exp_cnt = popped_bomb_cnt;
+
+					// POP 을 해서 살짝 검사해봤는데, 얘가 candidate 이 아니라면 이전 stack 다 무너뜨림
+					if (str[cur] != explosion[popped_bomb_cnt]) {
+						while (pop(trash, trash));
+						bomb_cnt++;
+						exp_cnt = 0;
+						continue;
+					}
+					else
+						continue;
+
+				}
+				else {// pop 이 없다면, 처음부터 explosion 정보는 리셋.
+					bomb_cnt++;
+					exp_cnt = 0;
+					continue;
+				}
 			}
 		}
+		else
+			cur++;
+
 	}
 }
 
