@@ -2,6 +2,7 @@
 
 	https://www.acmicpc.net/problem/9935
     
+	0.11 : Implementatino inspired by reference answer.
 	0.10 : 1. push : when it meets starting character of explosion.
 	       2. pop : when it meets bomb. It would be launched continuosly.
 		   3. bomb[n] : store range of bomb. For instance, if bomb[0] stores integer 24, range from 0 to 24 is doomed.
@@ -32,65 +33,79 @@
 			   1) Buffer(explosion) will be re-written as IGNORED('#').
 			   2) A position is set to current - num of explosion.
 			   3) It re-start checking explosion.
-			 2. If it's not matched, it will keep checking. 
-				        
+			 2. If it's not matched, it will keep checking.
+
 */
 
 #include <iostream>
 #include <cstdio>
+#include <stdio.h>
 
 using namespace std;
 
 const int MAX_STR_LEN = 1000010;
-const int MAX_EXPLOSION_LEN = 62;
+const int MAX_EXPLOSION_LEN = 40;
 
 char str[MAX_STR_LEN + 1] = { 0, };
 char explosion[MAX_EXPLOSION_LEN + 2] = { 0, };
 char output[MAX_STR_LEN + 1] = { 0, };
 int output_idx = 0;
 int exp_size = 0;
-
-int bombs[MAX_STR_LEN + 1] = { 0, };
+int bombs_begin[MAX_STR_LEN];
+int bombs_end[MAX_STR_LEN];
+const char IGNORE = '#';
 
 void input_proc(void)
 {
 #if _DEBUG
 	freopen("inp1.txt", "r", stdin);
 #endif
-
-#if 0
-	cin >> str;
-	cin >> explosion;
-#else
 	scanf("%s", str);
 	scanf("%s", explosion);
-#endif
 	while (explosion[exp_size++]);
 	exp_size--;
 	explosion[exp_size] = -1;
 }
 
-
-
 void output_proc(void)
 {
-	int cnt = 0;
-	while (str[cnt]) {
-		if (bombs[cnt])
-			cnt = bombs[cnt] + 1; 
-		else
-			output[output_idx++] = str[cnt++];
-	}
-	if (output_idx)
-		printf("%s\n", "FILE");
-	else
-		printf("FRULA\n");
-
 #if 1
+	int erase = 0;
+	bool printed = false;
+	for (int cnt = 0; str[cnt]; cnt++) {
+		erase += bombs_begin[cnt];
+		if (erase)
+			str[cnt] = IGNORE;
+		else {
+			printed = true;
+			printf("%c", str[cnt]);
+		}
+		erase -= bombs_end[cnt];
+	}
+
+
+	if (!printed)
+		printf("%s\n", "FRULA");
+#else
 	FILE* fp = fopen("output.txt", "w");
-	fprintf(fp,"%s\n", output);
+	int erase = 0;
+	bool printed = false;
+	for (int cnt = 0; str[cnt]; cnt++) {
+		erase += bombs_begin[cnt];
+		if (erase)
+			str[cnt] = IGNORE;
+		else {
+			printed = true;
+			fprintf(fp, "%c", str[cnt]);
+		}
+		erase -= bombs_end[cnt];
+	}
+	fprintf(fp, "\n");
+	if (!printed)
+		fprintf(fp, "%s\n", "FRULA");
 	if (fp)
 		fclose(fp);
+
 #endif
 }
 
@@ -107,94 +122,55 @@ bool push(const int index, const int explosion_cnt)
 	if (stack_cnt > MAX_STR_LEN) {
 		return false;
 	}
-	
+
 	stack[++stack_cnt] = { index, explosion_cnt };
 	return true;
 }
 
 bool pop(int& index, int& explosion_cnt)
 {
-	if (stack_cnt < 1) 
+	if (stack_cnt < 1)
 		return false;
-	
+
 	index = stack[stack_cnt].index;
 	explosion_cnt = stack[stack_cnt].explosion_cnt;
 	stack[stack_cnt].index = 0;
 	stack[stack_cnt--].explosion_cnt = 0;
-	
+
 	return true;
 }
 
 void do_something(void)
 {
-	int cur = 0, exp_cnt = 0, bomb_begin = 0;
-	while (str[cur]) {
-		if (str[cur] == explosion[exp_cnt]) {
-			if (exp_cnt == 0) // 이전 loop 에서 폭발물에 대한 정보가 없는 경우
-				bomb_begin = cur;
-
-			bool is_bomb = false;
-			while (1) {
-				if (exp_cnt == exp_size) {
-					is_bomb = true;
-					break;
-				}
-
-				if (str[cur] != explosion[exp_cnt])
-					break;
-				else
-					cur++, exp_cnt++;
-			}
-
-			if (is_bomb) {
-				bombs[bomb_begin] = cur - 1;
-				int index, explosion_cnt;
-				if (pop(index, explosion_cnt)) {
-					bomb_begin = index;
-					exp_cnt = explosion_cnt;
-					continue;
-				}
-				else { // No pop-up item represents there is no candidate to be merged.
-					exp_cnt = 0;
-					continue;
-				}
-			}
-			else if (str[cur] == explosion[0]) {
-				push(bomb_begin, exp_cnt);
-				exp_cnt = 0;
-				continue;
-			}
-			else { 
-				exp_cnt = 0;
-				continue;
-			}
-		}
-		else if (exp_cnt && str[cur] == explosion[0]) { // BA BAD BAD D. Third B
-			push(bomb_begin, exp_cnt);
-			exp_cnt = 0;
+	for (int cnt = 0; str[cnt] ; cnt++) {
+		if (str[cnt] == explosion[0]) {
+			push(cnt, 1);
 			continue;
 		}
-		else if (exp_cnt /*stack is there*/) {
-			bool found = false;
-			for (int i = 1; i < exp_size; i++) {
-				if (str[cur] == explosion[i]) {
-					found = true;
-					break;
-				}
-			}
-			int tmp;
-			if (!found)
-				while (pop(tmp, tmp));
-			cur++, exp_cnt = 0;
-		}
-		else {
-			cur++, exp_cnt = 0;
-		}
+		
+		int pos = 0;
+		int exp_cnt = 0;
+		if (pop(pos, exp_cnt)) {
+			if (str[cnt] == explosion[exp_cnt]) {
+				exp_cnt++;
 
+				if (exp_cnt == exp_size) {
+					bombs_begin[pos]++;
+					bombs_end[cnt]++;
+				}
+				else {
+					push(pos, exp_cnt);
+				}
+				continue; // see the next element
+			}
+			else {
+				while (pop(pos, exp_cnt));
+			}
+		}
 	}
 }
 
-#if 0
+#if 1
 int main()
 {
 	input_proc();
