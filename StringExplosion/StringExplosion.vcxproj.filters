@@ -24,4 +24,12 @@
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="eksplozija.in.10b">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="eksplozija.out.10b">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

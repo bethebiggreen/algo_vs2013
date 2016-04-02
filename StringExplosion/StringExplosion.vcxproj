@@ -147,6 +147,10 @@
   <ItemGroup>
     <Text Include="inp1.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="eksplozija.in.10b" />
+    <None Include="eksplozija.out.10b" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
