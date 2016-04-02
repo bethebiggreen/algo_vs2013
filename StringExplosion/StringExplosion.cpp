@@ -2,7 +2,7 @@
 
 	https://www.acmicpc.net/problem/9935
     
-	0.11 : Implementatino inspired by reference answer.
+	0.11 : Implementation inspired by reference answer.
 	0.10 : 1. push : when it meets starting character of explosion.
 	       2. pop : when it meets bomb. It would be launched continuosly.
 		   3. bomb[n] : store range of bomb. For instance, if bomb[0] stores integer 24, range from 0 to 24 is doomed.
@@ -48,8 +48,6 @@ const int MAX_EXPLOSION_LEN = 40;
 
 char str[MAX_STR_LEN + 1] = { 0, };
 char explosion[MAX_EXPLOSION_LEN + 2] = { 0, };
-char output[MAX_STR_LEN + 1] = { 0, };
-int output_idx = 0;
 int exp_size = 0;
 int bombs_begin[MAX_STR_LEN];
 int bombs_end[MAX_STR_LEN];
@@ -144,6 +142,11 @@ void do_something(void)
 {
 	for (int cnt = 0; str[cnt] ; cnt++) {
 		if (str[cnt] == explosion[0]) {
+			if (exp_size == 1) {
+				bombs_begin[cnt]++;
+				bombs_end[cnt]++;
+				continue;
+			}
 			push(cnt, 1);
 			continue;
 		}
