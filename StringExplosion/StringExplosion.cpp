@@ -194,6 +194,7 @@ void do_something(void)
 	}
 }
 
+#if 0
 int main()
 {
 	input_proc();
@@ -201,3 +202,4 @@ int main()
 	output_proc();
 	return 0;
 }
+#endif
