@@ -49,7 +49,7 @@ inline double get_proability(int num, double probability)
 	double temp1 = probability;
 	double temp2 = 1.0 - probability;
 	for (int j = 0; j < num; j++)
-		temp1 *= probability;
+		temp1 *= probability; // temp = 3*3*3*3
 	for (int j = 0; j < N-num; j++)
 		temp2 *= (1.0-probability);
 	
