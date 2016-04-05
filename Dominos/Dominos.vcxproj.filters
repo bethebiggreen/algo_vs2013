@@ -15,24 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="StringExplosion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source.cpp">
+    <ClCompile Include="Dominos.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="inp1.txt">
+    <Text Include="input.txt">
       <Filter>Resource Files</Filter>
     </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="eksplozija.in.10b">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="eksplozija.out.10b">
-      <Filter>Resource Files</Filter>
-    </None>
   </ItemGroup>
 </Project>

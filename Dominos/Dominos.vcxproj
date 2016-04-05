@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{530FD832-A729-4EB8-AD84-FBF68732D66A}</ProjectGuid>
+    <ProjectGuid>{7ED73215-6F62-498B-873D-0436CAB7334D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>StringExplosion</RootNamespace>
+    <RootNamespace>Dominos</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -142,15 +142,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source.cpp" />
-    <ClCompile Include="StringExplosion.cpp" />
+    <ClCompile Include="Dominos.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="inp1.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="eksplozija.in.10b" />
-    <None Include="eksplozija.out.10b" />
+    <Text Include="input.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

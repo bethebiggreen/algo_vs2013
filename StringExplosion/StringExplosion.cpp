@@ -2,7 +2,11 @@
 
 	https://www.acmicpc.net/problem/9935
     
-	0.09 : (in progress) Stack
+	0.11 : Implementation inspired by reference answer.
+	0.10 : 1. push : when it meets starting character of explosion.
+	       2. pop : when it meets bomb. It would be launched continuosly.
+		   3. bomb[n] : store range of bomb. For instance, if bomb[0] stores integer 24, range from 0 to 24 is doomed.
+	0.09 : Stack
 	0.08 : Previous suspector is stored in stack.
 	0.07 : Calling printf burstly causes timeout. answer string is stored in buffer temporary and printed out once.
 	0.06 : Fix BABADD (BAD) case. Still timout is occured. 
@@ -29,69 +33,77 @@
 			   1) Buffer(explosion) will be re-written as IGNORED('#').
 			   2) A position is set to current - num of explosion.
 			   3) It re-start checking explosion.
-			 2. If it's not matched, it will keep checking. 
-			
-	        
+			 2. If it's not matched, it will keep checking.
+
 */
 
 #include <iostream>
 #include <cstdio>
+#include <stdio.h>
 
 using namespace std;
 
-const int MAX_STR_LEN = 1000000;
-const int MAX_EXPLOSION_LEN = 36;
+const int MAX_STR_LEN = 1000010;
+const int MAX_EXPLOSION_LEN = 40;
 
-const char IGNORE = '#';
-char str[MAX_STR_LEN + 3];
-char explosion[MAX_EXPLOSION_LEN + 1];
+char str[MAX_STR_LEN + 1] = { 0, };
+char explosion[MAX_EXPLOSION_LEN + 2] = { 0, };
 int exp_size = 0;
+int bombs_begin[MAX_STR_LEN];
+int bombs_end[MAX_STR_LEN];
+const char IGNORE = '#';
 
 void input_proc(void)
 {
 #if _DEBUG
-	freopen("input", "r", stdin);
+	freopen("inp1.txt", "r", stdin);
 #endif
-
-#if 0
-	cin >> str+1;
-	cin >> explosion;
-#else
-	scanf("%s", str + 1);
+	scanf("%s", str);
 	scanf("%s", explosion);
-#endif
 	while (explosion[exp_size++]);
 	exp_size--;
 	explosion[exp_size] = -1;
 }
 
-
 void output_proc(void)
 {
-	int cnt = 0;
-	
-	bool has_printed = false;
-	char output[MAX_STR_LEN] = { 0, };
-	int output_idx = 0;
-	while (str[cnt]) {
-		if (str[cnt] != IGNORE)
-			output[output_idx++] = str[cnt];
+#if 1
+	int erase = 0;
+	bool printed = false;
+	for (int cnt = 0; str[cnt]; cnt++) {
+		erase += bombs_begin[cnt];
+		if (erase)
+			str[cnt] = IGNORE;
+		else {
+			printed = true;
+			printf("%c", str[cnt]);
+		}
+		erase -= bombs_end[cnt];
 	}
 
-	char frula[6] = "FRULA";
-	frula[5] = '\0';
-	cnt = 0;
-	if (!output_idx) 
-		while(frula[cnt] != '\0')
-			output[output_idx++] = frula[cnt++];
 
-#if 0
-	printf("%s\n", output);
+	if (!printed)
+		printf("%s\n", "FRULA");
 #else
 	FILE* fp = fopen("output.txt", "w");
-	fprintf(fp,"%s\n", output);
+	int erase = 0;
+	bool printed = false;
+	for (int cnt = 0; str[cnt]; cnt++) {
+		erase += bombs_begin[cnt];
+		if (erase)
+			str[cnt] = IGNORE;
+		else {
+			printed = true;
+			fprintf(fp, "%c", str[cnt]);
+		}
+		erase -= bombs_end[cnt];
+	}
+	fprintf(fp, "\n");
+	if (!printed)
+		fprintf(fp, "%s\n", "FRULA");
 	if (fp)
 		fclose(fp);
+
 #endif
 }
 
@@ -105,9 +117,10 @@ int stack_cnt = 0;
 
 bool push(const int index, const int explosion_cnt)
 {
-	if (stack_cnt > MAX_STR_LEN)
+	if (stack_cnt > MAX_STR_LEN) {
 		return false;
-	
+	}
+
 	stack[++stack_cnt] = { index, explosion_cnt };
 	return true;
 }
@@ -116,33 +129,51 @@ bool pop(int& index, int& explosion_cnt)
 {
 	if (stack_cnt < 1)
 		return false;
-	
+
 	index = stack[stack_cnt].index;
-	explosion_cnt = stack[stack_cnt--].explosion_cnt;
-	
+	explosion_cnt = stack[stack_cnt].explosion_cnt;
+	stack[stack_cnt].index = 0;
+	stack[stack_cnt--].explosion_cnt = 0;
+
 	return true;
 }
 
 void do_something(void)
 {
-	int cur = 0;
-	int exp_cnt = 0;
-	while (str[cur]) {
-		if (str[cur] == explosion[exp_cnt]) {
-			while (1) 
-				if(str[cur++] != explosion[exp_cnt++])
-					break;
+	for (int cnt = 0; str[cnt] ; cnt++) {
+		if (str[cnt] == explosion[0]) {
+			if (exp_size == 1) {
+				bombs_begin[cnt]++;
+				bombs_end[cnt]++;
+				continue;
+			}
+			push(cnt, 1);
+			continue;
+		}
+		
+		int pos = 0;
+		int exp_cnt = 0;
+		if (pop(pos, exp_cnt)) {
+			if (str[cnt] == explosion[exp_cnt]) {
+				exp_cnt++;
 
-			if (exp_cnt == exp_size) {
-
+				if (exp_cnt == exp_size) {
+					bombs_begin[pos]++;
+					bombs_end[cnt]++;
+				}
+				else {
+					push(pos, exp_cnt);
+				}
+				continue; // see the next element
 			}
 			else {
-				push(cur, exp_cnt);
+				while (pop(pos, exp_cnt));
 			}
 		}
 	}
 }
 
+#if 1
 int main()
 {
 	input_proc();
@@ -150,3 +181,4 @@ int main()
 	output_proc();
 	return 0;
 }
+#endif
