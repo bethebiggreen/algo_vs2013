@@ -34,20 +34,6 @@ inline bool swap(node& a, node& b)
 	return true;
 }
 
-/*
-    1.   p   l       r
- 	    1,  0,  1, -1
-
-    2.   p       l   r
- 		 1,  0,  1, -1
-
-    3.   p       lr  
-		 1,  0,  -1, 1
-  
-    4.    l      p  l
-	     -1  0   1  1
-
-*/
 void quick_sort(int l, int r, node* n)
 {
 	if (l >= r)
@@ -60,25 +46,49 @@ void quick_sort(int l, int r, node* n)
 	node pivot_node = n[pivot];
 	int end = r;
 
+	// For covering all cases!
+	// Legacy algorithm cares only bigger and lesser, so algorithm does not have clear idea for same value as pivot.
+	// Goal : Every try makes a partitione like below
+	//       | Lesser and equal to PIVOT |  PIVOT  | Greater than PIVOT 
+	// 1. From left, two things are stop-triggers. Otherwise, start will be increased.
+	//   1) Once it meets greater number.
+	//   2) Once 'start', which is assigned from left initially, is over 'end'.
+	// 2. From right, three things are stop-triggers.
+	//   1) Once it meets lesser number.
+	//   2) Once 'end', which is assigned from right initially, is under 'start'.
+	//   3) Once it meets pivot. However this case, 'end' should be decreased to avoid dead-lock.
+	//      (Our pivot is always next to left, so we could conclude while loop after it.) 
+	// 
+	// For swapping cases
+	// 1. 'start' is over 'end'.
+	//  1) 'end' swaps with 'pivot'.
+	// 2. Otherwise,
+	//  1) 'start' is far from 'end'. We would swap between 'start' and 'end'.
+	//  2) 'start' is same as 'end'. It would swap each other, however there is nothing changed in a conclusion.
+	//     After this, the loop will be broken. 
+	//  3) 'start' is over 'end'. We would swap between 'end' and 'pivot', and next recursion is expected.
+	//
+	// * Aware that over and under are not including 'equal to'.
+    // * Swapping 'is_smaller' and 'is_bigger' effects in-versa- ordering.
+
 	while (start <= end) {
 		while (start <= end) {
-			if (is_bigger(n[start], n[pivot])) {
+			if (is_smaller(n[start], n[pivot])) {
 				break;
-			}
-			else if (is_equal(n[start], n[pivot])) {
-				break; 
 			}
 			else
 				start++;
 		}
 
-		while (start <= end && end > l) {
-			if (is_smaller(n[end], n[pivot])) {
+		while (start <= end) {
+			if (is_bigger(n[end], n[pivot])) {
 				break;
 			}
 			else if(is_equal(n[end], n[pivot]))
 			{
-				end--;
+				if (end == pivot)
+					end--;
+				break;
 			}
 			else
 				end--;
@@ -102,10 +112,20 @@ void quick_sort(int l, int r, node* n)
 
 int main()
 {
-	node a[4] = { {1,0,0,0,0},
-				  {-1,0,0,0,0},
+	node a[10] = { {-1,0,0,0,0},
+ 				  {-1,0,0,0,0},
+				  {1,0,0,0,0},
 				  {0,0,0,0,0},
-				  {-1,0,0,0,0}};
-	quick_sort(0, 3, a);
+				  {1, 0, 0, 0, 0},
+				  { 1, 0, 0, 0, 0 },
+				  {-1, 0, 0, 0, 0 },
+				  {-1, 0, 0, 0, 0},
+				  {0, 0, 0, 0, 0},
+				  {0, 0, 0, 0, 0}};
+
+
+
+
+	quick_sort(0, 9, a);
 	return 0;
 }
