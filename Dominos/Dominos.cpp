@@ -173,6 +173,7 @@ inline bool unmark(const node& n)
 		return false;
 }
 
+// Brute force is not good way to find a solution in limited time.
 void find_max(int value, int num_dominos, int depth)
 {
 	if (!num_dominos || depth >= MAX_DEPTH) {
@@ -202,7 +203,7 @@ void do_something(void)
 			for (int type = VERTICAL; type <= HORIZONTAL; type++)
 				add_node(i, j, (node_type)type);
 
-	// quick_sort(0, node_by_big_order_pos-1, node_by_big_order);
+	quick_sort(0, node_by_big_order_pos-1, node_by_big_order);
 	find_max(0,K,0);
 }
 
