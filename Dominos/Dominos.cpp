@@ -1,3 +1,4 @@
+#if 1
 #include <cstdio>
 #include <iostream>
 
@@ -17,7 +18,7 @@ typedef struct node_t {
 		: val(in_val), x1(in_x1), y1(in_y1), x2(in_x2), y2(in_y2) , type(in_type) {}
 } node ;
 
-const int MAX_N = 2000;
+const int MAX_N = 2001;
 int MAX_NODE_SIZE = 0;
 const int MAX_DEPTH = 30;
 int MAP[MAX_N][MAX_N] = { 0, };
@@ -94,36 +95,51 @@ void input_proc(void)
 		}
 	}
 	
-	MAX_NODE_SIZE = 2*(2*((N - 1)*(N - 1)) + 2*(N - 1));
+	MAX_NODE_SIZE = (2*((N - 1)*(N - 1)) + 2*(N - 1));
 #if __USE_DYNAMIC_MEMORY_ALLOCATION__
-	node_by_big_order = new node[MAX_NODE_SIZE];
+	node_by_big_order = new node[MAX_NODE_SIZE+2];
 #endif
 }
 
+const int MIN_INT = 0xFFFFFFFF;
+const int MAX_INT = 0x7FFFFFFF;
 inline bool add_node(int y, int x, node_type type)
 {
 	// We will add only bigger node than smallest one, at least.
-	const int smallest = node_by_big_order[node_by_big_order_pos - 1].val;
+	int min_val = MAX_INT;
+	int min_idx = 0;
+	for (int i = 0; i < node_by_big_order_pos; i++) {
+		if (node_by_big_order[i].val < min_val) {
+			min_val = node_by_big_order[i].val;
+			min_idx = i;
+		}
+	}
+
+	node n;
 	switch (type) {
 	case HORIZONTAL:
-		if (x + 1 < N) {
-			if ((MAP[y][x] + MAP[y][x + 1]) < smallest )
-				return false;
-			node_by_big_order[node_by_big_order_pos++] = { MAP[y][x] + MAP[y][x + 1], x, y, x + 1, y, type };
-		}
+		if (x + 1 < N) 
+			n = { MAP[y][x] + MAP[y][x + 1], x, y, x + 1, y, type };
+		else 
+			return false;
 		break;
 	case VERTICAL:
-		if (y + 1 < N) {
-			if (MAP[y][x] + MAP[y + 1][x] < smallest)
-				return false;
-			node_by_big_order[node_by_big_order_pos++] = { MAP[y][x] + MAP[y + 1][x], x, y, x, y + 1, type };
-		}
+		if (y + 1 < N) 
+			n = { MAP[y][x] + MAP[y + 1][x], x, y, x, y + 1, type };
+		else 
+			return false;
 		break;
 	default:
 		break;
 	}
 
-	quick_sort(0, node_by_big_order_pos-1, node_by_big_order);
+	if (node_by_big_order_pos < 30)  
+		node_by_big_order[node_by_big_order_pos++] = n;
+	else if (min_val < n.val) 
+		node_by_big_order[min_idx] = n;
+	else
+		return false;
+
 	return true;
 }
 
@@ -186,6 +202,7 @@ void do_something(void)
 			for (int type = VERTICAL; type <= HORIZONTAL; type++)
 				add_node(i, j, (node_type)type);
 
+	// quick_sort(0, node_by_big_order_pos-1, node_by_big_order);
 	find_max(0,K,0);
 }
 
@@ -207,6 +224,7 @@ void reset(void)
 	MAX_NODE_SIZE = 0;
 	solution = 0;
 	SUM = 0;
+	node_by_big_order_pos = 0;
 }
 
 void output_proc(void)
@@ -229,3 +247,135 @@ int main()
 	}
 	return 0;
 }
+#else
+#include <stdio.h>
+#define MAX_N 2000
+
+typedef struct {
+	int x;
+	int y;
+}_point;
+typedef struct {
+	_point a;
+	_point b;
+	int val;
+}_block;
+
+_block block[2 * MAX_N*MAX_N - 2 * MAX_N];
+int block_idx;
+int matrix[MAX_N][MAX_N];
+int check_matrix[MAX_N][MAX_N];
+int N, K;
+int sum;
+int max_block;
+int checked[29];
+int partial_sum[29];
+
+int val;
+int combi_val;
+
+void add_block(int y1, int x1, int y2, int x2)
+{
+	if (block_idx == max_block)
+	{
+		int min_idx = 0;
+		for (int i = 1; i < max_block; i++) {
+			if (block[i].val < block[min_idx].val)
+				min_idx = i;
+		}
+		if (block[min_idx].val > matrix[y1][x1] + matrix[y2][x2])
+			return;
+		block[min_idx].val = matrix[y1][x1] + matrix[y2][x2];
+		block[min_idx].a.x = x1;
+		block[min_idx].a.y = y1;
+		block[min_idx].b.x = x2;
+		block[min_idx].b.y = y2;
+		return;
+	}
+	else {
+		block[block_idx].val = matrix[y1][x1] + matrix[y2][x2];
+		block[block_idx].a.x = x1;
+		block[block_idx].a.y = y1;
+		block[block_idx].b.x = x2;
+		block[block_idx++].b.y = y2;
+	}
+}
+void manage_input()
+{
+	block_idx = 0;
+	sum = 0;
+
+	for (int i = 0; i < N; i++)
+		for (int j = 0; j < N; j++)
+			scanf("%d", &matrix[i][j]);
+
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			check_matrix[i][j] = 0;
+			sum += matrix[i][j];
+		}
+	}
+
+	for (int h = 0; h < N; h++)
+	{
+		for (int w = 0; w < N - 1; w++)
+		{
+			add_block(h, w, h, w + 1);
+		}
+	}
+	for (int w = 0; w < N; w++)
+	{
+		for (int h = 0; h < N - 1; h++)
+		{
+			add_block(h, w, h + 1, w);
+		}
+	}
+}
+
+void combi(int lev, int sum, int idx)
+{
+	if (lev == K)
+	{
+		if (val < sum)
+			val = sum;
+		return;
+	}
+	for (; idx < max_block; idx++)
+	{
+		if (checked[idx] == 0)
+		{
+			if (!check_matrix[block[idx].a.y][block[idx].a.x] && !check_matrix[block[idx].b.y][block[idx].b.x]) {
+				checked[idx] = 1;
+				check_matrix[block[idx].a.y][block[idx].a.x] = check_matrix[block[idx].b.y][block[idx].b.x] = 1;
+				combi(lev + 1, sum + block[idx].val, idx + 1);
+				checked[idx] = 0;
+
+				check_matrix[block[idx].a.y][block[idx].a.x] = check_matrix[block[idx].b.y][block[idx].b.x] = 0;
+			}
+		}
+	}
+
+
+}
+
+int main()
+{
+	int T;
+	freopen("input1.txt", "r", stdin);
+	scanf("%d", &T);
+	while (T--)
+	{
+		scanf("%d %d", &N, &K);
+		max_block = 1 + (K - 1) * 7;
+
+		manage_input();
+		val = 0;
+		combi_val = 0;
+
+		combi(0, 0, 0);
+		printf("%d\n", sum - val);
+
+	}
+	return 0;
+}
+#endif
