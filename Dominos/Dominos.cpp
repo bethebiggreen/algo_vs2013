@@ -1,8 +1,8 @@
-#if 0
-#include <stdio.h>
+#if 1
+#include <cstdio>
 #include <iostream>
-#define _USE_DYNAMIC_MEMORY_ 1
 
+#define __USE_DYNAMIC_MEMORY_ALLOCATION__ 1
 using namespace std;
 
 typedef enum node_type_e{
@@ -15,45 +15,29 @@ typedef struct node_t {
 	int x1, y1, x2, y2;
 	node_type type;
 	node_t(int in_val = -1, int in_x1 = -1, int in_y1 = -1, int in_x2 = -1, int in_y2 = -1, node_type in_type = VERTICAL) 
-		: val(in_val), x1(in_x1), y1(in_y1), x2(in_x2), y2(in_y2) , type(in_type)
-	{}
-
+		: val(in_val), x1(in_x1), y1(in_y1), x2(in_x2), y2(in_y2) , type(in_type) {}
 } node ;
 
-int TC_NUM = 0;
 const int MAX_N = 2001;
-int MAP[MAX_N][MAX_N];
-int N = 0, K = 0;
 int MAX_NODE_SIZE = 0;
+const int MAX_DEPTH = 30;
+int MAP[MAX_N][MAX_N] = { 0, };
+bool VISITED[MAX_N][MAX_N] = { 0, };
+int N = 0, K = 0;
 int SUM = 0;
-const int MAX_DEPTH = 35; // heuristic
+int solution = 0;
 
-int answer = 0;
-bool visited[MAX_DEPTH] = { false, };
-bool visited_map[MAX_N][MAX_N] = { false, };
-
-#if _USE_DYNAMIC_MEMORY_
-node* node_by_big_order = NULL;
+#if __USE_DYNAMIC_MEMORY_ALLOCATION__
+node* node_by_big_order = NULL; 
 #else
 node node_by_big_order[50];
-#endif
+#endif 
 
 int node_by_big_order_pos = 0;
 
-inline bool is_bigger(const node& a, const node& b)
-{
-	return (a.val > b.val) ? true : false;
-}
-
-inline bool is_smaller(const node& a, const node& b)
-{
-	return (a.val > b.val) ? false : true;
-}
-
-inline bool is_equal(const node& a, const node& b)
-{
-	return (a.val == b.val) ? true : false;
-}
+inline bool is_bigger(const node& a, const node& b)  { return (a.val > b.val)  ? true : false; }
+inline bool is_smaller(const node& a, const node& b) { return (a.val > b.val)  ? false : true; }
+inline bool is_equal(const node& a, const node& b)   { return (a.val == b.val) ? true : false; }
 
 inline bool swap(node& a, node& b)
 {
@@ -111,33 +95,57 @@ void input_proc(void)
 		}
 	}
 	
-	MAX_NODE_SIZE = 2*(2*((N - 1)*(N - 1)) + 2*(N - 1));
-#if _USE_DYNAMIC_MEMORY_
-	node_by_big_order = new node[MAX_NODE_SIZE];
+	MAX_NODE_SIZE = (2*((N - 1)*(N - 1)) + 2*(N - 1));
+#if __USE_DYNAMIC_MEMORY_ALLOCATION__
+	node_by_big_order = new node[MAX_NODE_SIZE+2];
 #endif
 }
 
-
+const int MIN_INT = 0xFFFFFFFF;
+const int MAX_INT = 0x7FFFFFFF;
 inline bool add_node(int y, int x, node_type type)
 {
+	// We will add only bigger node than smallest one, at least.
+	int min_val = MAX_INT;
+	int min_idx = 0;
+	for (int i = 0; i < node_by_big_order_pos; i++) {
+		if (node_by_big_order[i].val < min_val) {
+			min_val = node_by_big_order[i].val;
+			min_idx = i;
+		}
+	}
+
+	node n;
 	switch (type) {
 	case HORIZONTAL:
 		if (x + 1 < N) 
-			node_by_big_order[node_by_big_order_pos++] = { MAP[y][x] + MAP[y][x + 1], x, y, x+1, y, type };
+			n = { MAP[y][x] + MAP[y][x + 1], x, y, x + 1, y, type };
+		else 
+			return false;
 		break;
 	case VERTICAL:
-		if (y + 1 < N)
-			node_by_big_order[node_by_big_order_pos++] = { MAP[y][x] + MAP[y+1][x], x, y, x, y+1, type };
+		if (y + 1 < N) 
+			n = { MAP[y][x] + MAP[y + 1][x], x, y, x, y + 1, type };
+		else 
+			return false;
 		break;
 	default:
 		break;
 	}
+
+	if (node_by_big_order_pos < 30)  
+		node_by_big_order[node_by_big_order_pos++] = n;
+	else if (min_val < n.val) 
+		node_by_big_order[min_idx] = n;
+	else
+		return false;
+
 	return true;
 }
 
-inline bool is_it_possible(const node& n)
+inline bool can_it_put(const node& n)
 {
-	if (visited_map[n.y1][n.x1] || visited_map[n.y2][n.x2])
+	if (VISITED[n.y1][n.x1] || VISITED[n.y2][n.x2]) 
 		return false;
 	else
 		return true;
@@ -145,9 +153,9 @@ inline bool is_it_possible(const node& n)
 
 inline bool mark(const node& n)
 {
-	if (is_it_possible(n)) {
-		visited_map[n.y1][n.x1] = true;
-		visited_map[n.y2][n.x2] = true;
+	if (can_it_put(n)) {
+		VISITED[n.y1][n.x1] = true;
+		VISITED[n.y2][n.x2] = true;
 		return true;
 	}
 	else
@@ -156,104 +164,81 @@ inline bool mark(const node& n)
 
 inline bool unmark(const node& n)
 {
-	if (!is_it_possible(n)) {
-		visited_map[n.y1][n.x1] = false;
-		visited_map[n.y2][n.x2] = false;
+	if (!can_it_put(n)) {
+		VISITED[n.y1][n.x1] = false;
+		VISITED[n.y2][n.x2] = false;
 		return true;
 	}
 	else
 		return false;
 }
 
-inline int my_max(int a, int b)
-{
-	return (a > b) ? a : b;
-}
-
-inline int my_min(int a, int b)
-{
-	return (a > b) ? b : a;
-}
-
-
-// 3 1 2 4
-// 3 1 2
-// 3 1   4
-// 3   2 4
-//   1 2 4
+// Brute force is not good way to find a solution in limited time.
 void find_max(int value, int num_dominos, int depth)
 {
-	if (!num_dominos || depth >= 30) {
-		if (answer < value)
-			answer = value;
+	if (!num_dominos || depth >= MAX_DEPTH) {
+		if (solution < value)
+			solution = value;
 		return;
 	}
 
-	// 지금 것을 고를수 있으면 고르고 넘어가고.. 아니면 못고르고 넘어감...
-	if (is_it_possible(node_by_big_order[depth])) {
-		mark(node_by_big_order[depth]);
-		find_max(value + node_by_big_order[depth].val, num_dominos - 1, depth + 1);
-		unmark(node_by_big_order[depth]);
+	const node& n = node_by_big_order[depth];
+	if (can_it_put(n)) {
+		mark(n);
+		find_max(value + n.val, num_dominos - 1, depth + 1);
+		unmark(n);
 		find_max(value, num_dominos, depth + 1);
 	}
 	else {
 		find_max(value, num_dominos, depth + 1);
 	}
 }
+
 // Heap can be the best solution for it due to save the memory.
 void do_something(void)
 {
-	// Make all coup
+	// Make all couples
 	for (int i = 0; i < N; i++)
 		for (int j = 0; j < N; j++)
 			for (int type = VERTICAL; type <= HORIZONTAL; type++)
 				add_node(i, j, (node_type)type);
 
-	// Sort by order
-	quick_sort(0, MAX_NODE_SIZE/2 - 1, node_by_big_order);
-	find_max(0, K, 0);
+	quick_sort(0, node_by_big_order_pos-1, node_by_big_order);
+	find_max(0,K,0);
 }
 
 void reset(void)
 {
+#if __USE_DYNAMIC_MEMORY_ALLOCATION__
+	if (node_by_big_order)
+		delete[] node_by_big_order;
+	node_by_big_order = NULL;
+#endif
 
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
 			MAP[i][j] = -1;
-			visited_map[i][j] = false;
+			VISITED[i][j] = false;
 		}
 	}
-
-	for (int i = 0; i < MAX_DEPTH; i++)
-		visited[i] = false;
-
+	
 	MAX_NODE_SIZE = 0;
-	answer = 0;
-
-#if _USE_DYNAMIC_MEMORY_
-	if (node_by_big_order)
-		delete[] node_by_big_order;
-	node_by_big_order = NULL;
-#else
-	for (int i = 0; i < MAX_DEPTH; i++)
-		node node_by_big_order[i] = { -1,-1,-1,-1,-1 };
-#endif
+	solution = 0;
+	SUM = 0;
 	node_by_big_order_pos = 0;
-
 }
 
 void output_proc(void)
 {
-	printf("%d\n", answer);
+	printf("%d\n", SUM - solution);
 }
-
 
 int main()
 {
 #if _DEBUG
-	freopen("inp1.txt", "r", stdin);
+	freopen("input.txt", "r", stdin);
 #endif
-	int tc_num = 0;
+	int TC_NUM = 0;
 	cin >> TC_NUM;
 	while (TC_NUM--) {
 		input_proc();
@@ -263,140 +248,135 @@ int main()
 	}
 	return 0;
 }
-
 #else
+#include <stdio.h>
+#define MAX_N 2000
 
-#include<iostream>
-#include<stdio.h>
-using namespace std;
+typedef struct {
+	int x;
+	int y;
+}_point;
+typedef struct {
+	_point a;
+	_point b;
+	int val;
+}_block;
 
-struct domino
+_block block[2 * MAX_N*MAX_N - 2 * MAX_N];
+int block_idx;
+int matrix[MAX_N][MAX_N];
+int check_matrix[MAX_N][MAX_N];
+int N, K;
+int sum;
+int max_block;
+int checked[29];
+int partial_sum[29];
+
+int val;
+int combi_val;
+
+void add_block(int y1, int x1, int y2, int x2)
 {
-	int x1, y1;
-	int x2, y2;
-	int sum;
-};
-
-const int MAX_COUNT = 2000;
-const int MAX_COMBI = 29;
-
-int N, K, total;
-int datum[MAX_COUNT + 1][MAX_COUNT + 1];
-int visited[MAX_COUNT + 1][MAX_COUNT + 1];
-int domino_count = 0;
-struct domino domino_array[MAX_COMBI];
-int MAX_SUM = 0;
-int called_adddomino = 0;
-void addDomino(int x1, int y1, int x2, int y2)
-{
-	called_adddomino++;
-	domino tmp;
-	tmp.x1 = x1;
-	tmp.y1 = y1;
-	tmp.x2 = x2;
-	tmp.y2 = y2;
-	tmp.sum = datum[x1][y1] + datum[x2][y2];
-
-	if (domino_count == 0)
+	if (block_idx == max_block)
 	{
-		domino_array[0] = tmp;
-		domino_count++;
+		int min_idx = 0;
+		for (int i = 1; i < max_block; i++) {
+			if (block[i].val < block[min_idx].val)
+				min_idx = i;
+		}
+		if (block[min_idx].val > matrix[y1][x1] + matrix[y2][x2])
+			return;
+		block[min_idx].val = matrix[y1][x1] + matrix[y2][x2];
+		block[min_idx].a.x = x1;
+		block[min_idx].a.y = y1;
+		block[min_idx].b.x = x2;
+		block[min_idx].b.y = y2;
 		return;
 	}
+	else {
+		block[block_idx].val = matrix[y1][x1] + matrix[y2][x2];
+		block[block_idx].a.x = x1;
+		block[block_idx].a.y = y1;
+		block[block_idx].b.x = x2;
+		block[block_idx++].b.y = y2;
+	}
+}
+void manage_input()
+{
+	block_idx = 0;
+	sum = 0;
 
-	if (domino_count >= MAX_COMBI && domino_array[MAX_COMBI - 1].sum >= tmp.sum) return;
+	for (int i = 0; i < N; i++)
+		for (int j = 0; j < N; j++)
+			scanf("%d", &matrix[i][j]);
 
-	for (int i = 0; i < domino_count; i++)
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			check_matrix[i][j] = 0;
+			sum += matrix[i][j];
+		}
+	}
+
+	for (int h = 0; h < N; h++)
 	{
-		if (domino_array[i].sum < tmp.sum)
+		for (int w = 0; w < N - 1; w++)
 		{
-			int start = (domino_count == MAX_COMBI) ? MAX_COMBI - 1 : domino_count;
-			for (int j = start; j > i; j--)
-			{
-				domino_array[j] = domino_array[j - 1];
+			add_block(h, w, h, w + 1);
+		}
+	}
+	for (int w = 0; w < N; w++)
+	{
+		for (int h = 0; h < N - 1; h++)
+		{
+			add_block(h, w, h + 1, w);
+		}
+	}
+}
+
+void combi(int lev, int sum, int idx)
+{
+	if (lev == K)
+	{
+		if (val < sum)
+			val = sum;
+		return;
+	}
+	for (; idx < max_block; idx++)
+	{
+		if (checked[idx] == 0)
+		{
+			if (!check_matrix[block[idx].a.y][block[idx].a.x] && !check_matrix[block[idx].b.y][block[idx].b.x]) {
+				checked[idx] = 1;
+				check_matrix[block[idx].a.y][block[idx].a.x] = check_matrix[block[idx].b.y][block[idx].b.x] = 1;
+				combi(lev + 1, sum + block[idx].val, idx + 1);
+				checked[idx] = 0;
+
+				check_matrix[block[idx].a.y][block[idx].a.x] = check_matrix[block[idx].b.y][block[idx].b.x] = 0;
 			}
-			domino_array[i] = tmp;
-			if (domino_count < MAX_COMBI) domino_count++;
-			return;
 		}
 	}
 
-	domino_array[domino_count] = tmp;
-	domino_count++;
-
-	return;
-}
-
-void Recursive(int count, int total_sum)
-{
-	int x1, y1, x2, y2, sum;
-
-	if (MAX_SUM < total_sum) MAX_SUM = total_sum;
-	if (count >= K) return;
-
-	for (int i = 0; i < domino_count; i++)
-	{
-		x1 = domino_array[i].x1;
-		y1 = domino_array[i].y1;
-		x2 = domino_array[i].x2;
-		y2 = domino_array[i].y2;
-		sum = domino_array[i].sum;
-
-		if (!visited[x1][y1] && !visited[x2][y2])
-		{
-			visited[x1][y1] = 1;
-			visited[x2][y2] = 1;
-			Recursive(count + 1, total_sum + sum);
-			visited[x1][y1] = 0;
-			visited[x2][y2] = 0;
-		}
-	}
 
 }
 
-
-int main(int argc, char** argv)
+int main()
 {
-	int test_case;
 	int T;
-	freopen("inp1.txt", "r", stdin);
-
-	std::ios::sync_with_stdio(false);
-	cin >> T;
-	for (test_case = 1; test_case <= T; ++test_case)
+	freopen("input1.txt", "r", stdin);
+	scanf("%d", &T);
+	while (T--)
 	{
+		scanf("%d %d", &N, &K);
+		max_block = 1 + (K - 1) * 7;
 
-		cin >> N >> K;
-		for (int i = 1; i <= N; i++)
-		{
-			for (int j = 1; j <= N; j++)
-			{
-				cin >> datum[i][j];
-				total += datum[i][j];
-				visited[i][j] = 0;
-			}
-		}
+		manage_input();
+		val = 0;
+		combi_val = 0;
 
-		for (int i = 1; i <= N; i++)
-		{
-			for (int j = 1; j <= N; j++)
-			{
-				if (j + 1 <= N) addDomino(i, j, i, j + 1);
-				if (i + 1 <= N) addDomino(i, j, i + 1, j);
-			}
-		}
+		combi(0, 0, 0);
+		printf("%d\n", sum - val);
 
-		Recursive(0, 0);
-		cout << total - MAX_SUM << endl;
-
-		total = 0;
-		MAX_SUM = 0;
-		domino_count = 0;
-		printf("addDomino is called %d times\n", called_adddomino);
-		called_adddomino = 0;
 	}
-
-
 	return 0;
 }
 #endif
