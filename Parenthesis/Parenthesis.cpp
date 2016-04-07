@@ -18,8 +18,10 @@ public :
 	stack<T>(int in_size = default_max_) : begin_(0), end_(-1), size_(in_size)
 	{
 		inner_queue_ = new T[size_];
+#if _DEBUG
 		for (int i = 0; i < size_; i++)
 			inner_queue_[i] = static_cast<char>('\0');
+#endif
 	}
 
 	~stack()
