@@ -1,5 +1,5 @@
 abcd
-3
-P x
-L
-P y
+2
+B
+B
+P a
