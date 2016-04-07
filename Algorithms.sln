@@ -35,6 +35,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Probability1", "Probability
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dominos", "Dominos\Dominos.vcxproj", "{7ED73215-6F62-498B-873D-0436CAB7334D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Parenthesis", "Parenthesis\Parenthesis.vcxproj", "{4E94B60A-1537-40D8-8247-140149E3380A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -171,6 +173,14 @@ Global
 		{7ED73215-6F62-498B-873D-0436CAB7334D}.Release|x64.Build.0 = Release|x64
 		{7ED73215-6F62-498B-873D-0436CAB7334D}.Release|x86.ActiveCfg = Release|Win32
 		{7ED73215-6F62-498B-873D-0436CAB7334D}.Release|x86.Build.0 = Release|Win32
+		{4E94B60A-1537-40D8-8247-140149E3380A}.Debug|x64.ActiveCfg = Debug|x64
+		{4E94B60A-1537-40D8-8247-140149E3380A}.Debug|x64.Build.0 = Debug|x64
+		{4E94B60A-1537-40D8-8247-140149E3380A}.Debug|x86.ActiveCfg = Debug|Win32
+		{4E94B60A-1537-40D8-8247-140149E3380A}.Debug|x86.Build.0 = Debug|Win32
+		{4E94B60A-1537-40D8-8247-140149E3380A}.Release|x64.ActiveCfg = Release|x64
+		{4E94B60A-1537-40D8-8247-140149E3380A}.Release|x64.Build.0 = Release|x64
+		{4E94B60A-1537-40D8-8247-140149E3380A}.Release|x86.ActiveCfg = Release|Win32
+		{4E94B60A-1537-40D8-8247-140149E3380A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
