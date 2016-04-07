@@ -33,18 +33,29 @@ void do_something(void)
 	char arg = 0;
 	char prev_cmd = 0;
 	int pos_diff = 0;
+
+	// Moving cursor is not a big burden.
 	while (cnt < command_num) {
 		scanf("%c", &command);
+
+		if (command == PASTE || command == BACKSPACE) {
+			if (prev_cmd == LEFT || prev_cmd == RIGHT) {
+				line_pos += pos_diff;
+				pos_diff = 0;
+				if (line_pos < 0)
+					line_pos = 0;
+			}
+		}
+
 		switch (command) {
 		case PASTE :
 			scanf("%c", &arg);
 			break;
 		case LEFT :
-			if (prev_cmd == LEFT || prev_cmd == RIGHT) {
-
-			}
+			pos_diff += 1;
 			break;
 		case RIGHT :
+			pos_diff -= 1;
 			break;
 		case BACKSPACE:
 			break;
