@@ -1,3 +1,46 @@
+/*
+1. TEST CASES
+MAX 10 chars, INPUT 3 chars 'abc', MAXLINE 6
+	1) EXCEED MAX CHRAS
+		Never happened.
+	2) UNDER ZERO
+abc
+5
+B
+B
+B
+B
+B
+	3) L, D during PB to exceed or go under.
+abc
+13
+B
+P d
+L
+P e
+L
+L
+L
+L
+D
+P f
+P g
+D
+B
+-> ab, abd, abed, afgbed, afged 
+
+
+
+1. TEST CASE
+-
+abc
+P a
+B
+B
+P a
+
+*/
+
 #include <stdio.h>
 
 // NO SPACES ARE ALLOWED
@@ -7,6 +50,7 @@ const int MAX_CHARS = 100000;
 
 char line[MAX_CHARS] = { 0, };
 int line_pos = -1;
+int line_len = 0;
 
 char tmp[MAX_CHARS] = { 0, };
 int tmp_pos = -1;
@@ -21,6 +65,7 @@ void input_proc(void)
 	scanf("%s\n", line);
 	scanf("%d\n", &command_num);
 	while (line[++line_pos]);
+	line_len = line_pos;
 }
 
 typedef enum e_mode{
@@ -28,32 +73,35 @@ typedef enum e_mode{
 	NAV = 1
 } mode;
 
-inline bool backspacing(int num)
+inline bool backspacing(void)
 {
-	int start_pos = ((line_pos - num) < 0 ) ? 0 : (line_pos - num);
-	int num_copied = line_pos - start_pos;
+	int target_pos = ((line_pos - num_of_backspace) < 0 ) ? 0 : (line_pos - num_of_backspace);
+	int num_copies = line_pos - target_pos;
 
-	for (int i = 0; i < num_copied; i++) 
-		line[start_pos + i] = line[line_pos + i];
+	for (int i = 0; i < num_copies; i++) 
+		line[line_pos-num_copies+i] = (line_pos + i < line_len) ? line[line_pos + i] : '\0';
 	
-	for (int i = line_pos + num_copied; i > num_copied; i--)
-		line[i] = '\0';
-	
+	line_pos -= num_copies;
+	line_len -= num_copies;
+	num_of_backspace = 0;
+
 	return true;
 }
 
 inline bool paste(void)
 {
-	int start_copy_pos_of_current_str = ((line_pos + stack_pos) > MAX_CHARS - 1) ? (line_pos+stack_pos): MAX_CHARS - 1;
+	for (int i = 0; i < (line_len - line_pos); i++) 
+		line[line_len + stack_pos - i] = line[line_len - i - 1];
+	
+	for (int i = 0; i < (stack_pos + 1); i++)
+		line[line_pos + i] = stack[i];
 
-	for (int i = 0; i < num_copied; i++) 
-		line[start_pos + i] = line[line_pos + i];
-	
-	for (int i = line_pos + num_copied; i > num_copied; i--)
-		line[i] = '\0';
-	
+	line_pos += (stack_pos+1);
+	line_len += (stack_pos+1);
+	stack_pos = -1;
 	return true;
 }
+
 void do_something(void)
 {
 	const static char PASTE = 'P';
@@ -62,7 +110,7 @@ void do_something(void)
 	const static char BACKSPACE = 'B';
 
 	int cnt = 0;
-	char cmd_line[4] = { 0, };
+	char cmd_line[5] = { 0, };
 	char command = 0;
 	char arg = 0;
 	char prev_cmd = 0;
@@ -72,33 +120,43 @@ void do_something(void)
 	
 	// Moving cursor is not a big burden.
 	while (cnt++ < command_num) {
-		scanf("%s\n", cmd_line);
+		scanf("%[^\n]\n", cmd_line);
 		command = cmd_line[0];
 		arg = cmd_line[2];
 		switch (command) {
 		case PASTE : // 
-			scanf("%c", &arg);
+			if (stack_pos == -1 && optimization_mode == BACKSPACE)
+				backspacing();
 			if (stack_pos == -1)
 				optimization_mode = PASTE;
-			stack[++stack_pos] = arg;
+			if(optimization_mode == PASTE)
+				stack[++stack_pos] = arg;
 			break;
 		case LEFT : // TRIGGERING EDIT MODE
 			if (optimization_mode == BACKSPACE)
-				backspacing(num_of_backspace);
+				backspacing();
+			else if (optimization_mode == PASTE)
+				paste();
 			optimization_mode = LEFT;
-			line_pos++;
+			if(line_pos != 0)
+				line_pos--;
 			break;
 		case RIGHT : // TRIGGERING EDIT MODE
+			if (optimization_mode == BACKSPACE)
+				backspacing();
+			else if (optimization_mode == PASTE)
+				paste();
 			optimization_mode = RIGHT;
-			line_pos--;
+			if(line_len != line_pos)
+				line_pos++;
 			break;
 		case BACKSPACE: // KEEP TYPING BACKSPACE CAN BE TREATED IN ONE EXECUTION.
 			if (stack_pos == -1)
 				optimization_mode = BACKSPACE;
 			if (optimization_mode == BACKSPACE)
 				num_of_backspace++;
-			else if(optimization_mode == PASTE)
-				stack_pos--;
+			else if (optimization_mode == PASTE) 
+				stack[stack_pos--] = '\0';
 			break;
 		default :
 			break;
@@ -108,9 +166,10 @@ void do_something(void)
 
 	switch (optimization_mode) {
 	case PASTE: // 
+		paste();
 		break;
 	case BACKSPACE: // KEEP TYPING BACKSPACE CAN BE TREATED IN ONE EXECUTION.
-		backspacing(num_of_backspace);
+		backspacing();
 		break;
 	default:
 		break;
@@ -125,7 +184,9 @@ void output_proc()
 
 int main(void)
 {
+#if _DEBUG
 	freopen("input.txt", "r", stdin);
+#endif
 	input_proc();
 	do_something();
 	output_proc();
