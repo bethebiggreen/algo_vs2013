@@ -1,59 +1,15 @@
 /*
-1. TEST CASES
-MAX 10 chars, INPUT 3 chars 'abc', MAXLINE 6
-	1) EXCEED MAX CHRAS
-		Never happened.
-	2) UNDER ZERO
-abc
-5
-B
-B
-B
-B
-B
-	3) L, D during PB to exceed or go under.
-abc
-13
-B
-P d
-L
-P e
-L
-L
-L
-L
-D
-P f
-P g
-D
-B
--> ab, abd, abed, afgbed, afged 
-
-
-
-1. TEST CASE
--
-abc
-P a
-B
-B
-P a
-
+It would be much slower if my stack keeps an array which is not linked-list.
 */
-
 #include <stdio.h>
 
 // NO SPACES ARE ALLOWED
-
-const int MAX_COMMAND_NUM = 500000;
-const int MAX_CHARS = 100000;
+const int MAX_COMMAND_NUM = 500000+1;
+const int MAX_CHARS = 100000+1;
 
 char line[MAX_CHARS] = { 0, };
 int line_pos = -1;
 int line_len = 0;
-
-char tmp[MAX_CHARS] = { 0, };
-int tmp_pos = -1;
 
 int stack[MAX_COMMAND_NUM] = { 0, };
 int stack_pos = -1;
@@ -68,13 +24,13 @@ void input_proc(void)
 	line_len = line_pos;
 }
 
-typedef enum e_mode{
-	EDIT = 0 ,
-	NAV = 1
-} mode;
-
+// line_pos : A current position of string. This position is used for adding new char.
+// line_len : A length of string. It would get same value as line_pos if cursor is in right-most.
+// num_of_backspace : In order to handle continuous backspace behaviours, this value is increased by every 'B'.
 inline bool backspacing(void)
 {
+	// target_pos : This value stores future-line_pos after backspacing. Due to save performance, under 0 is treated as 0.
+	// num_copies : A times of occurrence of copy to backspace.
 	int target_pos = ((line_pos - num_of_backspace) < 0 ) ? 0 : (line_pos - num_of_backspace);
 	int num_copies = line_pos - target_pos;
 
@@ -90,9 +46,11 @@ inline bool backspacing(void)
 
 inline bool paste(void)
 {
+	// This loop copies every character to position by adding stack_pos.
 	for (int i = 0; i < (line_len - line_pos); i++) 
 		line[line_len + stack_pos - i] = line[line_len - i - 1];
 	
+	// This loop copies every character , belongs to stack , to line_pos.
 	for (int i = 0; i < (stack_pos + 1); i++)
 		line[line_pos + i] = stack[i];
 
@@ -118,21 +76,22 @@ void do_something(void)
 
 	int optimization_mode = 0;
 	
-	// Moving cursor is not a big burden.
 	while (cnt++ < command_num) {
 		scanf("%[^\n]\n", cmd_line);
 		command = cmd_line[0];
 		arg = cmd_line[2];
 		switch (command) {
-		case PASTE : // 
+		case PASTE : 
+			// backspacing is needed to resolve from beginning of PASTE MODE.
 			if (stack_pos == -1 && optimization_mode == BACKSPACE)
 				backspacing();
 			if (stack_pos == -1)
 				optimization_mode = PASTE;
+			// stack is storing chracter(s) temporary.
 			if(optimization_mode == PASTE)
 				stack[++stack_pos] = arg;
 			break;
-		case LEFT : // TRIGGERING EDIT MODE
+		case LEFT : 
 			if (optimization_mode == BACKSPACE)
 				backspacing();
 			else if (optimization_mode == PASTE)
@@ -141,7 +100,7 @@ void do_something(void)
 			if(line_pos != 0)
 				line_pos--;
 			break;
-		case RIGHT : // TRIGGERING EDIT MODE
+		case RIGHT : 
 			if (optimization_mode == BACKSPACE)
 				backspacing();
 			else if (optimization_mode == PASTE)
@@ -164,11 +123,12 @@ void do_something(void)
 		prev_cmd = command;
 	}
 
+	// Resolving remaining job.
 	switch (optimization_mode) {
-	case PASTE: // 
+	case PASTE: 
 		paste();
 		break;
-	case BACKSPACE: // KEEP TYPING BACKSPACE CAN BE TREATED IN ONE EXECUTION.
+	case BACKSPACE: 
 		backspacing();
 		break;
 	default:
@@ -178,9 +138,18 @@ void do_something(void)
 
 void output_proc()
 {
+#if 0/_DEBUG
+	FILE* fp = fopen("output.txt", "w");
+	fprintf(fp, "%s\n",line);
+	if (fp)
+		fclose(fp);
+#else
+	line[line_len] = '\0';
 	printf("%s\n", line);
+#endif
 }
 
+#if 1
 
 int main(void)
 {
@@ -192,3 +161,4 @@ int main(void)
 	output_proc();
 	return 0;
 }
+#endif
