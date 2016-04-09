@@ -17,7 +17,7 @@ char buff[100002];
 int n;
 
 int main(void) {
-	freopen("input.txt", "r", stdin);
+	freopen("editor.in41", "r", stdin);
 #if 0 // Visual studion community does not recognize  'gets'.
 	gets(buff);
 #else
@@ -63,11 +63,20 @@ int main(void) {
 		right_stack.push(left_stack.top());
 		left_stack.pop();
 	}
+#if _DEBUG
+	FILE* fp = fopen("output2.txt", "w");
+	while (!right_stack.empty()) {
+		fprintf(fp,"%c", right_stack.top());
+		right_stack.pop();
+	}
+	fprintf(fp, "\n");
+#else
 	while (!right_stack.empty()) {
 		printf("%c", right_stack.top());
 		right_stack.pop();
 	}
 	printf("\n");
+#endif
 
 	return 0;
 }

@@ -1,25 +1,12 @@
 abc
-20
-L
-L
-L
-L
-D
 P d
-P e
-D
-D
-P g
+p e
 B
 B
 B
-B
-B
-D
-D
-D
-D
-P h
+
+
+
 
 abcd
 

@@ -5,7 +5,7 @@ It would be much slower if my stack keeps an array which is not linked-list.
 
 // NO SPACES ARE ALLOWED
 const int MAX_COMMAND_NUM = 500000+1;
-const int MAX_CHARS = 100000+1;
+const int MAX_CHARS = 300000+1;
 
 char line[MAX_CHARS] = { 0, };
 int line_pos = -1;
@@ -32,15 +32,15 @@ inline bool backspacing(void)
 	// target_pos : This value stores future-line_pos after backspacing. Due to save performance, under 0 is treated as 0.
 	// num_copies : A times of occurrence of copy to backspace.
 	int target_pos = ((line_pos - num_of_backspace) < 0 ) ? 0 : (line_pos - num_of_backspace);
-	int num_copies = line_pos - target_pos;
+	int num_copies = line_len - line_pos;
 
-	for (int i = 0; i < num_copies; i++) 
-		line[line_pos-num_copies+i] = (line_pos + i < line_len) ? line[line_pos + i] : '\0';
+	for (int i = 0; i < num_copies; i++)
+		line[target_pos + i] = line[line_pos + i]; 
 	
-	line_pos -= num_copies;
-	line_len -= num_copies;
-	num_of_backspace = 0;
-
+	line_len -= (line_pos-target_pos);
+	line_pos = target_pos;
+	num_of_backspace = 0;	
+	line[line_len] = '\0';
 	return true;
 }
 
@@ -57,6 +57,7 @@ inline bool paste(void)
 	line_pos += (stack_pos+1);
 	line_len += (stack_pos+1);
 	stack_pos = -1;
+	line[line_len] = '\0';
 	return true;
 }
 
@@ -138,7 +139,7 @@ void do_something(void)
 
 void output_proc()
 {
-#if 0/_DEBUG
+#if 0
 	FILE* fp = fopen("output.txt", "w");
 	fprintf(fp, "%s\n",line);
 	if (fp)
@@ -149,16 +150,13 @@ void output_proc()
 #endif
 }
 
-#if 1
-
 int main(void)
 {
 #if _DEBUG
-	freopen("input.txt", "r", stdin);
+	freopen("input.txt","r", stdin);
 #endif
 	input_proc();
 	do_something();
 	output_proc();
 	return 0;
 }
-#endif
