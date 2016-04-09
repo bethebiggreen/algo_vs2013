@@ -150,6 +150,7 @@ void output_proc()
 #endif
 }
 
+#if 0
 int main(void)
 {
 #if _DEBUG
@@ -160,3 +161,4 @@ int main(void)
 	output_proc();
 	return 0;
 }
+#endif
