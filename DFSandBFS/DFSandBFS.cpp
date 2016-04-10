@@ -88,6 +88,7 @@ void input_proc(void)
 	for (int i = 0; i < EDGES; i++) {
 		scanf("%d %d\n", &vertex1, &vertex2);
 		adj[vertex1][vertex2] = true;
+		adj[vertex2][vertex1] = true;
 	}
 }
 
@@ -112,7 +113,9 @@ void do_something(void)
 
 int main()
 {
+#if _DEBUG
 	freopen("input.txt", "r", stdin);
+#endif
 	input_proc();
 	do_something();
 	return 0;
