@@ -49,6 +49,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BreadFish", "BreadFish\Brea
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyStepNum", "EasyStepNum\EasyStepNum.vcxproj", "{1B18276C-9F69-43CF-AB5E-FF8C039E2C78}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PartString", "PartString\PartString.vcxproj", "{15191F85-142B-43C8-9468-E3973691F98F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -241,6 +243,14 @@ Global
 		{1B18276C-9F69-43CF-AB5E-FF8C039E2C78}.Release|x64.Build.0 = Release|x64
 		{1B18276C-9F69-43CF-AB5E-FF8C039E2C78}.Release|x86.ActiveCfg = Release|Win32
 		{1B18276C-9F69-43CF-AB5E-FF8C039E2C78}.Release|x86.Build.0 = Release|Win32
+		{15191F85-142B-43C8-9468-E3973691F98F}.Debug|x64.ActiveCfg = Debug|x64
+		{15191F85-142B-43C8-9468-E3973691F98F}.Debug|x64.Build.0 = Debug|x64
+		{15191F85-142B-43C8-9468-E3973691F98F}.Debug|x86.ActiveCfg = Debug|Win32
+		{15191F85-142B-43C8-9468-E3973691F98F}.Debug|x86.Build.0 = Debug|Win32
+		{15191F85-142B-43C8-9468-E3973691F98F}.Release|x64.ActiveCfg = Release|x64
+		{15191F85-142B-43C8-9468-E3973691F98F}.Release|x64.Build.0 = Release|x64
+		{15191F85-142B-43C8-9468-E3973691F98F}.Release|x86.ActiveCfg = Release|Win32
+		{15191F85-142B-43C8-9468-E3973691F98F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
