@@ -13,12 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\client">
+      <UniqueIdentifier>{e1204c3e-36a3-4339-933a-8fe092e71fb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\broker">
+      <UniqueIdentifier>{dc5b0d69-3fc3-41d7-8e8f-8c30c719c92b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\server">
+      <UniqueIdentifier>{e2d293df-4bdb-4085-a6f5-1ea32d6b78f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="message.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -30,10 +36,13 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="client.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="broker.h">
+      <Filter>Header Files\broker</Filter>
     </ClInclude>
     <ClInclude Include="server.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\server</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
