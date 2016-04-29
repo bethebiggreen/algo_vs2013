@@ -56,8 +56,8 @@ bool do_something(void)
 		// And iterate it others.
 		for (int i = 0; i < N ; i++) {
 			for (int j = 0; j < N; j++) {
-				if (connected[i][j]) {
-					if (!at_least_once[j] && at_least_once[i]) {
+				if (connected[i][j] && at_least_once[i]){
+					if (!at_least_once[j])  {
 						dist[j] = dist[i] + arr[i][j];
 						at_least_once[j] = true;
 						continue;
@@ -72,11 +72,10 @@ bool do_something(void)
 	// Once more for a cycling check
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
-			/*
-			if (i == j)
-				continue;
-				*/
-			if (connected[i][j]) {
+			if (connected[i][j] && at_least_once[i]) {
+				if (!at_least_once[j]) {
+					return false;
+				}
 				if (dist[j] > dist[i] + arr[i][j])
 					return false;
 			}
