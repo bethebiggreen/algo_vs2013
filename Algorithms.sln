@@ -45,6 +45,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BipartiteGraph", "Bipartite
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MergeSort", "MergeSort\MergeSort.vcxproj", "{AFF84CFD-C77A-4A0A-A931-3C73F09F1E90}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MakeBridge_2146", "MakeBridge_2146\MakeBridge_2146.vcxproj", "{513422CF-2612-4887-9D8C-F76C36402E1C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -221,6 +223,14 @@ Global
 		{AFF84CFD-C77A-4A0A-A931-3C73F09F1E90}.Release|x64.Build.0 = Release|x64
 		{AFF84CFD-C77A-4A0A-A931-3C73F09F1E90}.Release|x86.ActiveCfg = Release|Win32
 		{AFF84CFD-C77A-4A0A-A931-3C73F09F1E90}.Release|x86.Build.0 = Release|Win32
+		{513422CF-2612-4887-9D8C-F76C36402E1C}.Debug|x64.ActiveCfg = Debug|x64
+		{513422CF-2612-4887-9D8C-F76C36402E1C}.Debug|x64.Build.0 = Debug|x64
+		{513422CF-2612-4887-9D8C-F76C36402E1C}.Debug|x86.ActiveCfg = Debug|Win32
+		{513422CF-2612-4887-9D8C-F76C36402E1C}.Debug|x86.Build.0 = Debug|Win32
+		{513422CF-2612-4887-9D8C-F76C36402E1C}.Release|x64.ActiveCfg = Release|x64
+		{513422CF-2612-4887-9D8C-F76C36402E1C}.Release|x64.Build.0 = Release|x64
+		{513422CF-2612-4887-9D8C-F76C36402E1C}.Release|x86.ActiveCfg = Release|Win32
+		{513422CF-2612-4887-9D8C-F76C36402E1C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
