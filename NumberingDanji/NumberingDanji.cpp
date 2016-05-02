@@ -13,6 +13,7 @@
 const int MAX_N = 26;
 int length[(MAX_N + 1) * (MAX_N +1)];
 int sorted_length[(MAX_N + 1) * (MAX_N +1)];
+
 char map[MAX_N + 1][MAX_N + 1];
 int check_map[MAX_N + 1][MAX_N + 1];
 int N = 0;
@@ -96,9 +97,7 @@ void merge_sort(int l, int r)
 			sorted_length[cnt++] = length[s2++];
 	}
 
-	int left = 0;
-	if (cnt <= r) 
-		left = (s1 <= mid+1) ? s1 : s2;
+	int left = (s1 == mid+1) ? s2 : s1;
 	
 	while (cnt <= r) 
 			sorted_length[cnt++] = length[left++];
@@ -128,6 +127,7 @@ int main(void)
 #if _DEBUG
 	freopen("input.txt", "r", stdin);
 #endif
+	// merge_sort(0, MAX_N - 1);
 	input_proc();
 	do_something();
 	return 0;

@@ -15,8 +15,6 @@ void merge_sort(int l, int r)
 	int mid = (l + r) / 2;
 	merge_sort(l, mid);
 	merge_sort(mid + 1, r);
-	//need to merge
-	// start - mid, end(mid-1) - r
 	int start = l;
 	int end = mid + 1;;
 	int cnt = l;
