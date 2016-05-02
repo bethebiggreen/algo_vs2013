@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BOJ.cpp" />
     <ClCompile Include="RemoteControl.cpp" />
   </ItemGroup>
   <ItemGroup>

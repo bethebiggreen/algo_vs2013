@@ -18,6 +18,9 @@
     <ClCompile Include="RemoteControl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BOJ.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="input.txt">

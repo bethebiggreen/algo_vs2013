@@ -49,6 +49,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MakeBridge_2146", "MakeBrid
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NumberingDanji", "NumberingDanji\NumberingDanji.vcxproj", "{8DE551D3-134F-437E-BD83-DC338B8FAFCB}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RemoteControl", "RemoteControl\RemoteControl.vcxproj", "{BF89E592-2C46-42F0-9F92-D7070F1EAC40}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -241,6 +243,14 @@ Global
 		{8DE551D3-134F-437E-BD83-DC338B8FAFCB}.Release|x64.Build.0 = Release|x64
 		{8DE551D3-134F-437E-BD83-DC338B8FAFCB}.Release|x86.ActiveCfg = Release|Win32
 		{8DE551D3-134F-437E-BD83-DC338B8FAFCB}.Release|x86.Build.0 = Release|Win32
+		{BF89E592-2C46-42F0-9F92-D7070F1EAC40}.Debug|x64.ActiveCfg = Debug|x64
+		{BF89E592-2C46-42F0-9F92-D7070F1EAC40}.Debug|x64.Build.0 = Debug|x64
+		{BF89E592-2C46-42F0-9F92-D7070F1EAC40}.Debug|x86.ActiveCfg = Debug|Win32
+		{BF89E592-2C46-42F0-9F92-D7070F1EAC40}.Debug|x86.Build.0 = Debug|Win32
+		{BF89E592-2C46-42F0-9F92-D7070F1EAC40}.Release|x64.ActiveCfg = Release|x64
+		{BF89E592-2C46-42F0-9F92-D7070F1EAC40}.Release|x64.Build.0 = Release|x64
+		{BF89E592-2C46-42F0-9F92-D7070F1EAC40}.Release|x86.ActiveCfg = Release|Win32
+		{BF89E592-2C46-42F0-9F92-D7070F1EAC40}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
