@@ -13,7 +13,7 @@ int possible(int c) {
 	}
 
 	int len = 0;
-	while (c > 0) {
+	while (c > 0) { // 하나라도 고장났으면...어떻게 함?
 		if (broken[c % 10]) {
 			return 0;
 		}
