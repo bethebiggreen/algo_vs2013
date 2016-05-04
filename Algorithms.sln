@@ -57,6 +57,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sticker_9465", "Sticker_946
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Wine_2156", "Wine_2156\Wine_2156.vcxproj", "{2DEEA350-4C95-4A57-9B52-6FB835C4889D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LongestSequenceNum", "LongestSequenceNum\LongestSequenceNum.vcxproj", "{34DCF8C4-0ADC-46C3-B4A3-4F9957D98C99}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -281,6 +283,14 @@ Global
 		{2DEEA350-4C95-4A57-9B52-6FB835C4889D}.Release|x64.Build.0 = Release|x64
 		{2DEEA350-4C95-4A57-9B52-6FB835C4889D}.Release|x86.ActiveCfg = Release|Win32
 		{2DEEA350-4C95-4A57-9B52-6FB835C4889D}.Release|x86.Build.0 = Release|Win32
+		{34DCF8C4-0ADC-46C3-B4A3-4F9957D98C99}.Debug|x64.ActiveCfg = Debug|x64
+		{34DCF8C4-0ADC-46C3-B4A3-4F9957D98C99}.Debug|x64.Build.0 = Debug|x64
+		{34DCF8C4-0ADC-46C3-B4A3-4F9957D98C99}.Debug|x86.ActiveCfg = Debug|Win32
+		{34DCF8C4-0ADC-46C3-B4A3-4F9957D98C99}.Debug|x86.Build.0 = Debug|Win32
+		{34DCF8C4-0ADC-46C3-B4A3-4F9957D98C99}.Release|x64.ActiveCfg = Release|x64
+		{34DCF8C4-0ADC-46C3-B4A3-4F9957D98C99}.Release|x64.Build.0 = Release|x64
+		{34DCF8C4-0ADC-46C3-B4A3-4F9957D98C99}.Release|x86.ActiveCfg = Release|Win32
+		{34DCF8C4-0ADC-46C3-B4A3-4F9957D98C99}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
