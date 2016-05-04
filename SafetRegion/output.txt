@@ -1,0 +1,76 @@
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:0 j:1 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:0, j:1 will add belows.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:0 j:3 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:0, j:3 will add belows.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:1 j:0 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:1, j:0 will add belows.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:1 j:2 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:1, j:2 will add belows.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:1 j:4 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:1, j:4 will add belows.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:2 j:1 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:2, j:1 will add belows.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:2 j:3 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:2, j:3 will add belows.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:3 j:0 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:3, j:0 will add belows.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:3 j:2 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:3, j:2 will add belows.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:3 j:4 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:3, j:4 will add belows.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:4 j:1 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:4, j:1 will add belows.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:4 j:3 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:4, j:3 will add belows.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] finding start ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] finding start ends
