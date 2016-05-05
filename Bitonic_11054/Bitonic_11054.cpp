@@ -43,7 +43,7 @@ int main(void)
 	}
 
 	int ans = 0;
-	for (int i = 1; i <= N; i++)
+	for (int i = 2; i < N; i++)
 		if (ans < dl[i] + dr[i])
 			ans = dl[i] + dr[i];
 
