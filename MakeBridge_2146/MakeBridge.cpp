@@ -1,6 +1,9 @@
-#include <stdio.h>
+// The project goes wrong on different project.
+// This code was from 'https://gist.github.com/Baekjoon/2c32984ad5c42b333c38' which resolves
+// 'Broken remote controller'
+// It solves with exhaustive search.
 
-int N = 0;
+#include <stdio.h>
 
 bool broken[10];
 int possible(int c)
@@ -22,15 +25,13 @@ int possible(int c)
 		c /= 10;
 	}
 }
-void input_proc(void)
-{
-	scanf("%d\n", &N);
-}
 
 int main(void)
 {
+	freopen("input.txt", "r", stdin);
 	int n, m;
-	scanf("%d %d\n", &n, &m);
+	scanf("%d\n", &n);
+	scanf("%d\n", &m);
 	for (int i = 0; i < m; i++) {
 		int x;
 		scanf("%d ", &x);

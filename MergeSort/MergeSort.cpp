@@ -43,3 +43,39 @@ int main(void)
 	merge_sort(0, MAX_N - 1);
 	return 0;
 }
+
+
+
+
+#if 0 // Æ²¸°°Í
+void merge_sort(int l, int r)
+{
+	if (l >= r)
+		return;
+
+	int mid = (l + r) / 2;
+	merge_sort(l, mid);
+	merge_sort(mid + 1, r);
+
+	int s1 = l;
+	int s2 = mid + 1;
+
+	int cnt = l;
+	while (s1 <= mid && s2 <= r) {
+		if (length[s1] < length[s2])
+			sorted_length[cnt++] = length[s1++];
+		else
+			sorted_length[cnt++] = length[s2++];
+	}
+
+	int left = 0;
+	if (cnt <= r)
+		left = (s1 <= mid + 1) ? s1 : s2;
+
+	while (cnt <= r)
+		sorted_length[cnt++] = length[left++];
+
+	for (int i = l; i <= r; i++)
+		length[i] = sorted_length[i];
+}
+#endif

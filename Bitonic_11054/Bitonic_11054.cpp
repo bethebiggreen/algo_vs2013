@@ -34,8 +34,8 @@ int main(void)
 		int max = 1;
 		for (int j = N; j > i; j--) {
 			if (a[i] > a[j]) {
-				if (max < dl[j] + 1)
-					max = dl[j] + 1;
+				if (max < dr[j] + 1)
+					max = dr[j] + 1;
 			}
 
 		}
