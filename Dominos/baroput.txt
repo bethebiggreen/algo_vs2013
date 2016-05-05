@@ -1,0 +1,3 @@
+0/1 knapsack problem specification
+
+Total weight capacity: 13743

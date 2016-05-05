@@ -1,0 +1,231 @@
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:0 j:0 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:0, j:0 will add belows.
+[           mark] i:0, j:1 will add belows.
+[           mark] i:1, j:0 will add belows.
+[           mark] i:0, j:2 will add belows.
+[           mark] i:1, j:1 will add belows.
+[           mark] i:1, j:1 will add belows.
+[           mark] i:1, j:1 is returned with out adding.
+[           mark] i:2, j:0 will add belows.
+[           mark] i:0, j:3 will add belows.
+[           mark] i:3, j:0 will add belows.
+[           mark] i:0, j:4 will add belows.
+[           mark] i:1, j:3 will add belows.
+[           mark] i:3, j:1 will add belows.
+[           mark] i:4, j:0 will add belows.
+[           mark] i:0, j:5 will add belows.
+[           mark] i:2, j:3 will add belows.
+[           mark] i:3, j:2 will add belows.
+[           mark] i:5, j:0 will add belows.
+[           mark] i:0, j:6 will add belows.
+[           mark] i:1, j:5 will add belows.
+[           mark] i:2, j:4 will add belows.
+[           mark] i:3, j:3 will add belows.
+[           mark] i:2, j:2 will add belows.
+[           mark] i:3, j:3 will add belows.
+[           mark] i:3, j:3 is returned with out adding.
+[           mark] i:4, j:2 will add belows.
+[           mark] i:2, j:2 will add belows.
+[           mark] i:2, j:2 is returned with out adding.
+[           mark] i:5, j:1 will add belows.
+[           mark] i:6, j:0 will add belows.
+[           mark] i:1, j:6 will add belows.
+[           mark] i:1, j:6 will add belows.
+[           mark] i:1, j:6 is returned with out adding.
+[           mark] i:3, j:4 will add belows.
+[           mark] i:3, j:4 will add belows.
+[           mark] i:3, j:4 is returned with out adding.
+[           mark] i:4, j:3 will add belows.
+[           mark] i:4, j:3 will add belows.
+[           mark] i:4, j:3 is returned with out adding.
+[           mark] i:6, j:1 will add belows.
+[           mark] i:6, j:1 will add belows.
+[           mark] i:6, j:1 is returned with out adding.
+[           mark] i:2, j:6 will add belows.
+[           mark] i:3, j:5 will add belows.
+[           mark] i:4, j:4 will add belows.
+[           mark] i:4, j:4 will add belows.
+[           mark] i:4, j:4 is returned with out adding.
+[           mark] i:5, j:3 will add belows.
+[           mark] i:6, j:2 will add belows.
+[           mark] i:3, j:6 will add belows.
+[           mark] i:3, j:6 will add belows.
+[           mark] i:3, j:6 is returned with out adding.
+[           mark] i:6, j:3 will add belows.
+[           mark] i:6, j:3 will add belows.
+[           mark] i:6, j:3 is returned with out adding.
+[           mark] i:4, j:6 will add belows.
+[           mark] i:6, j:4 will add belows.
+[           mark] i:5, j:6 will add belows.
+[           mark] i:6, j:5 will add belows.
+[           mark] i:6, j:6 will add belows.
+[           mark] i:5, j:5 will add belows.
+[           mark] i:6, j:6 will add belows.
+[           mark] i:6, j:6 is returned with out adding.
+[           mark] i:5, j:5 will add belows.
+[           mark] i:5, j:5 is returned with out adding.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] finding start ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:0 j:0 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:0, j:0 will add belows.
+[           mark] i:0, j:1 will add belows.
+[           mark] i:1, j:0 will add belows.
+[           mark] i:0, j:2 will add belows.
+[           mark] i:2, j:0 will add belows.
+[           mark] i:0, j:3 will add belows.
+[           mark] i:3, j:0 will add belows.
+[           mark] i:0, j:4 will add belows.
+[           mark] i:4, j:0 will add belows.
+[           mark] i:0, j:5 will add belows.
+[           mark] i:5, j:0 will add belows.
+[           mark] i:0, j:6 will add belows.
+[           mark] i:6, j:0 will add belows.
+[           mark] i:1, j:6 will add belows.
+[           mark] i:6, j:1 will add belows.
+[           mark] i:2, j:6 will add belows.
+[           mark] i:6, j:2 will add belows.
+[           mark] i:3, j:6 will add belows.
+[           mark] i:6, j:3 will add belows.
+[           mark] i:4, j:6 will add belows.
+[           mark] i:6, j:4 will add belows.
+[           mark] i:5, j:6 will add belows.
+[           mark] i:6, j:5 will add belows.
+[           mark] i:6, j:6 will add belows.
+[           mark] i:6, j:6 will add belows.
+[           mark] i:6, j:6 is returned with out adding.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:2 j:2 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:2, j:2 will add belows.
+[           mark] i:2, j:3 will add belows.
+[           mark] i:3, j:2 will add belows.
+[           mark] i:2, j:4 will add belows.
+[           mark] i:3, j:3 will add belows.
+[           mark] i:3, j:3 will add belows.
+[           mark] i:3, j:3 is returned with out adding.
+[           mark] i:4, j:2 will add belows.
+[           mark] i:3, j:4 will add belows.
+[           mark] i:3, j:4 will add belows.
+[           mark] i:3, j:4 is returned with out adding.
+[           mark] i:4, j:3 will add belows.
+[           mark] i:4, j:3 will add belows.
+[           mark] i:4, j:3 is returned with out adding.
+[           mark] i:4, j:4 will add belows.
+[           mark] i:4, j:4 will add belows.
+[           mark] i:4, j:4 is returned with out adding.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] finding start ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:0 j:0 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:0, j:0 will add belows.
+[           mark] i:0, j:1 will add belows.
+[           mark] i:1, j:0 will add belows.
+[           mark] i:0, j:2 will add belows.
+[           mark] i:2, j:0 will add belows.
+[           mark] i:0, j:3 will add belows.
+[           mark] i:3, j:0 will add belows.
+[           mark] i:0, j:4 will add belows.
+[           mark] i:4, j:0 will add belows.
+[           mark] i:0, j:5 will add belows.
+[           mark] i:5, j:0 will add belows.
+[           mark] i:0, j:6 will add belows.
+[           mark] i:6, j:0 will add belows.
+[           mark] i:1, j:6 will add belows.
+[           mark] i:6, j:1 will add belows.
+[           mark] i:2, j:6 will add belows.
+[           mark] i:6, j:2 will add belows.
+[           mark] i:3, j:6 will add belows.
+[           mark] i:6, j:3 will add belows.
+[           mark] i:4, j:6 will add belows.
+[           mark] i:6, j:4 will add belows.
+[           mark] i:5, j:6 will add belows.
+[           mark] i:6, j:5 will add belows.
+[           mark] i:6, j:6 will add belows.
+[           mark] i:6, j:6 will add belows.
+[           mark] i:6, j:6 is returned with out adding.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:2 j:2 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:2, j:2 will add belows.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:2 j:4 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:2, j:4 will add belows.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:3 j:3 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:3, j:3 will add belows.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:4 j:2 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:4, j:2 will add belows.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:4 j:4 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:4, j:4 will add belows.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] finding start ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:0 j:0 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:0, j:0 will add belows.
+[           mark] i:0, j:1 will add belows.
+[           mark] i:1, j:0 will add belows.
+[           mark] i:0, j:2 will add belows.
+[           mark] i:2, j:0 will add belows.
+[           mark] i:0, j:3 will add belows.
+[           mark] i:3, j:0 will add belows.
+[           mark] i:0, j:4 will add belows.
+[           mark] i:4, j:0 will add belows.
+[           mark] i:0, j:5 will add belows.
+[           mark] i:5, j:0 will add belows.
+[           mark] i:0, j:6 will add belows.
+[           mark] i:6, j:0 will add belows.
+[           mark] i:1, j:6 will add belows.
+[           mark] i:6, j:1 will add belows.
+[           mark] i:2, j:6 will add belows.
+[           mark] i:6, j:2 will add belows.
+[           mark] i:3, j:6 will add belows.
+[           mark] i:6, j:3 will add belows.
+[           mark] i:4, j:6 will add belows.
+[           mark] i:6, j:4 will add belows.
+[           mark] i:5, j:6 will add belows.
+[           mark] i:6, j:5 will add belows.
+[           mark] i:6, j:6 will add belows.
+[           mark] i:6, j:6 will add belows.
+[           mark] i:6, j:6 is returned with out adding.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] i:3 j:3 will be added
+[num_of_safe_region] finding start ends
+[num_of_safe_region] marking begins
+[           mark] i:3, j:3 will add belows.
+[num_of_safe_region] marking ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] finding start ends
+[num_of_safe_region] finding start begins
+[num_of_safe_region] finding start ends
