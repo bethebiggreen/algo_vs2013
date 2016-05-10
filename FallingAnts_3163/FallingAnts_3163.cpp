@@ -7,7 +7,8 @@ typedef struct ant_t {
 	int pos;
 	int dir;
 	int abs;
-	ant(int in_id = INVALID, int in_pos = INVALID, int in_dir = 0, int in_abs = INVALID) : id(in_id), pos(in_pos), dir(in_dir), abs(in_abs) {}
+	ant_t(int in_id = INVALID, int in_pos = INVALID, int in_dir = 0, int in_abs = INVALID) : 
+		id(in_id), pos(in_pos), dir(in_dir), abs(in_abs) {}
 } ant;
 
 const int MAX_N = 100000 + 1;
@@ -25,7 +26,7 @@ void merge_sort(int l, int r, ant arr[])
 	int mid = (l + r) / 2;
 
 	merge_sort(l, mid, arr);
-	merge_sort(mid,r, arr);
+	merge_sort(mid+1,r, arr);
 
 	int s1 = l;
 	int s2 = mid+1;
@@ -52,7 +53,7 @@ void merge_sort(int l, int r, ant arr[])
 int main(void)
 {
 
-	ant tmp[MAX_N+1];
+	ant tmp[4];
 	tmp[0].abs = 1;
 	tmp[1].abs = 2;
 	tmp[2].abs = -1;
