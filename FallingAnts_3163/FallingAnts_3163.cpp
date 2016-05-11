@@ -96,8 +96,17 @@ bool comp(ant a, ant b)
 int main(void)
 {
 
+	int a[3] = { 1,2,3 };
+	int b[3] = { 4,5,6 };
+	int i = 0;
+	i = 0;
+	while (i <= 2) {
+		a[i++] = b[i];
+	}
+
 	int tc;
 #if _DEBUG
+
 	freopen("input.txt", "r", stdin);
 #endif
 	scanf("%d\n", &tc);
