@@ -144,21 +144,17 @@ int main(void)
 					}
 				}
 				else {
-					if (asc_q[i].id < 0) {
+					if (asc_q[i].id < 0) 
 						sol[i] = pos_q[l++].id;
-					}
-					else {
+					else 
 						sol[i] = pos_q[r--].id;
-					}
 				}
 			}
 			else {
-				if (asc_q[i].id < 0) {
+				if (asc_q[i].id < 0) 
 					sol[i] = pos_q[l++].id;
-				}
-				else {
+				else 
 					sol[i] = pos_q[r--].id;
-				}
 			}
 		}
 		printf("%d\n", sol[N-1]);
