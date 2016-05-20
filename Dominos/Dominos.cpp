@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <iostream>
 
-#define __USE_DYNAMIC_MEMORY_ALLOCATION__ 1
+#define __USE_DYNAMIC_MEMORY_ALLOCATION__ 0
 using namespace std;
 
 typedef enum node_type_e {
@@ -88,10 +88,12 @@ void quick_sort(int l, int r, node* n)
 
 void input_proc(void)
 {
-	scanf("%d %d", &N, &K);
+	// scanf("%d %d", &N, &K);
+	cin >> N >> K;
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
-			scanf("%d", &MAP[i][j]);
+			// scanf("%d", &MAP[i][j]);
+			cin >> MAP[i][j];
 			SUM += MAP[i][j];
 		}
 	}
@@ -201,12 +203,14 @@ void find_max(int value, int num_dominos, int depth)
 void do_something(void)
 {
 	// Make all couples
+
 	for (int i = 0; i < N; i++)
 		for (int j = 0; j < N; j++)
 			for (int type = VERTICAL; type <= HORIZONTAL; type++)
 				add_node(i, j, (node_type)type);
 
-	// quick_sort(0, node_by_big_order_pos - 1, node_by_big_order);
+
+	quick_sort(0, node_by_big_order_pos - 1, node_by_big_order);
 	find_max(0, K, 0);
 }
 
@@ -241,12 +245,15 @@ int main()
 #if _DEBUG
 	freopen("inp1.txt", "r", stdin);
 #endif
+	std::ios::sync_with_stdio(false);
 	int TC_NUM = 0;
-	scanf("%d", &TC_NUM);
+	//scanf("%d", &TC_NUM);
+	cin >> TC_NUM;
 	while (TC_NUM--) {
 		input_proc();
 		do_something();
 		output_proc();
+
 		reset();
 	}
 	return 0;
@@ -254,6 +261,7 @@ int main()
 #else
 #include<iostream>
 #include<stdio.h>
+#include<time.h>
 using namespace std;
 
 struct domino
@@ -351,6 +359,8 @@ int main(int argc, char** argv)
 	cin >> T;
 	for (test_case = 1; test_case <= T; ++test_case)
 	{
+		printf("Starting adding input\n");
+		clock_t begin = clock();
 
 		cin >> N >> K;
 		for (int i = 1; i <= N; i++)
@@ -372,7 +382,9 @@ int main(int argc, char** argv)
 			}
 		}
 
+	
 		Recursive(0, 0);
+		printf("Time lapsed in %lf seconds\n", double(clock() - begin) / CLOCKS_PER_SEC);
 		cout << total - MAX_SUM << ", " << times << " times" << endl;
 
 		total = 0;
