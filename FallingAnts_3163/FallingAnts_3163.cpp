@@ -15,7 +15,7 @@
 */
 #include <stdio.h>
 
-#define _USE_STL_ 1
+#define _USE_STL_ 0
 
 #if _USE_STL_
 #include<algorithm>
@@ -68,19 +68,20 @@ void merge_sort(int l, int r, ant arr[])
 			asc_q[cnt++] = arr[s2++];
 	}
 
-	if (s1 <= mid) {
-		while(s1 <= mid)
-			asc_q[cnt++] = arr[s1++];
-	}
-	else
-	{
-		while(s2 <= r)
+	if (s1 > mid) {
+		while (s2 <= r)
 			asc_q[cnt++] = arr[s2++];
+	}
+	else {
+		while (s1 <= mid)
+			asc_q[cnt++] = arr[s1++];
 	}
 
 	cnt = l;
-	while (cnt <= r)
-		src_q[cnt++] = asc_q[cnt];
+	while (cnt <= r) {
+		src_q[cnt] = asc_q[cnt];
+		cnt++;
+	}
 
 	return ;
 }
@@ -95,8 +96,17 @@ bool comp(ant a, ant b)
 int main(void)
 {
 
+	int a[3] = { 1,2,3 };
+	int b[3] = { 4,5,6 };
+	int i = 0;
+	i = 0;
+	while (i <= 2) {
+		a[i++] = b[i];
+	}
+
 	int tc;
 #if _DEBUG
+
 	freopen("input.txt", "r", stdin);
 #endif
 	scanf("%d\n", &tc);
@@ -122,7 +132,7 @@ int main(void)
 
 		int l = 0, r = N - 1;
 		int must_be = 0;
-		for (int i = 0; i < N; i++) {
+		for (int i = 0; i < K; i++) {
 			if (must_be != 0) {
 				if (must_be > 0)
 					sol[i] = pos_q[r--].id;
@@ -133,7 +143,7 @@ int main(void)
 			}
 
 			if (i + 1 < N) {
-				if (asc_q[i].abs == asc_q[i + 1].abs) {
+				if (src_q[i].abs == src_q[i + 1].abs) {
 					if (pos_q[l].id < pos_q[r].id) {
 						sol[i] = pos_q[l++].id;
 						must_be = 1; //r
@@ -144,24 +154,20 @@ int main(void)
 					}
 				}
 				else {
-					if (asc_q[i].id < 0) {
+					if (src_q[i].id < 0) 
 						sol[i] = pos_q[l++].id;
-					}
-					else {
+					else 
 						sol[i] = pos_q[r--].id;
-					}
 				}
 			}
 			else {
-				if (asc_q[i].id < 0) {
+				if (src_q[i].id < 0) 
 					sol[i] = pos_q[l++].id;
-				}
-				else {
+				else 
 					sol[i] = pos_q[r--].id;
-				}
 			}
 		}
-		printf("%d\n", sol[N-1]);
+		printf("%d\n", sol[K-1]);
 	}
 
 	return 0;
