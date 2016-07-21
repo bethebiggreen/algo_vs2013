@@ -13,17 +13,23 @@ int arr[MAX_N];
 
 int N, M, K;
 
-long long query_tree(int l, int r, int index)
+long long query_tree(int l, int r,int index)
 {
-	if (l < tree[index].l && tree[index].r > r) // no range at all
-		return 0;
-
-	if (l == tree[index].l && tree[index].r == r)
+	int t_r = tree[index].r;
+	int t_l = tree[index].l;
+	if (l == t_l && t_r == r) // same range
 		return tree[index].val;
 
-	int mid = (l + r) / 2;
-	long long from_left = query_tree(l, mid, index*2);
-	long long from_right = query_tree(mid+1, r, index*2+1);
+	long long from_left = 0 , from_right = 0;
+	if (r < t_l) 
+		return 0;
+	else if (l > t_r) 
+		return 0;
+	else {
+		int mid = (tree[index].l + tree[index].r) / 2;
+		from_left = query_tree(l, mid, index * 2);
+		from_right = query_tree(mid + 1, r, index * 2 + 1);
+	}
 
 	return from_left+from_right;
 }
@@ -59,14 +65,8 @@ long long build_tree(int l, int r, int index)
 	long long from_left = build_tree(l, mid, index*2);
 	long long from_right = build_tree(mid+1, r, index*2+1);
 
-#if 0 // find max
-	if (from_left > from_right)
-		tree[index] = { l,r,from_left };
-	else
-		tree[index] = { l,r,from_right };
-#else  // sum
 	tree[index] = { l,r,from_left + from_right };
-#endif 
+
 	return tree[index].val;
 }
 
@@ -81,5 +81,6 @@ int main(void)
 		scanf("%d\n", arr + i);
 	
 	printf("%lld\n", build_tree(0, N-1,1));
+	printf("%lld\n", query_tree(0, 1,1));
 	return 0;
 }
